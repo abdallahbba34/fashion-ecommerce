@@ -1,0 +1,44 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Local env files
+.env*.local
+.env
+# .env.production - À gérer manuellement sur le serveur
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Fichiers temporaires de déploiement
+*.txt
+*.png
+vps-install.sh
+deploy-script.sh
+create-deploy-zip.ps1
+ecommerce-deploy.zip
+deploy-instructions.txt
