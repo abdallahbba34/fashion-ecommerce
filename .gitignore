@@ -34,11 +34,27 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Uploaded files
+/public/uploads/*
+!/public/uploads/.gitkeep
+
 # Fichiers temporaires de déploiement
-*.txt
-*.png
 vps-install.sh
 deploy-script.sh
 create-deploy-zip.ps1
 ecommerce-deploy.zip
 deploy-instructions.txt
+
+# Documentation temporaire
+SSH1.md
+DEPLOIEMENT_COMPLET_RECAPITULATIF.md
+GUIDE_DEPLOIEMENT_ETAPES_RESTANTES.md
+Doc1.pdf
+
+# Fichiers de configuration serveur
+fashion-ecommerce-nginx.conf
+
+# Fichiers temporaires et screenshots
+*.txt
+*.png
+!public/**/*.png

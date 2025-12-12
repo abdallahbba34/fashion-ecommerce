@@ -3,13 +3,14 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
 import ProductCard from '@/components/ProductCard';
+import { ProductGridSkeleton } from '@/components/ui/Skeleton';
 import { Filter, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
 
 export default function ProductsPage() {
   const searchParams = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [selectedCategory, setSelectedCategory] = useState<string>('tous');
   const [selectedFilter, setSelectedFilter] = useState<string>('all');
   const [selectedSize, setSelectedSize] = useState<string>('all');
   const [priceRange, setPriceRange] = useState<string>('all');
@@ -212,7 +213,7 @@ export default function ProductsPage() {
               variant="outline"
               className="w-full"
               onClick={() => {
-                setSelectedCategory('all');
+                setSelectedCategory('tous');
                 setSelectedFilter('all');
                 setSelectedSize('all');
                 setPriceRange('all');
@@ -244,20 +245,38 @@ export default function ProductsPage() {
 
           {/* Products Grid */}
           {loading ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500">Chargement des produits...</p>
-            </div>
+            <ProductGridSkeleton count={9} />
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-12">
-              <p className="text-gray-500">Aucun produit trouvé.</p>
-              <p className="text-sm text-gray-400 mt-2">
-                Essayez de modifier vos filtres
+            <div className="text-center py-16 animate-fadeIn">
+              <div className="inline-block p-6 bg-gray-50 rounded-full mb-4">
+                <Filter size={48} className="text-gray-400" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun produit trouvé</h3>
+              <p className="text-gray-500 mb-6">
+                Essayez de modifier vos filtres pour voir plus de résultats
               </p>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSelectedCategory('tous');
+                  setSelectedFilter('all');
+                  setSelectedSize('all');
+                  setPriceRange('all');
+                }}
+              >
+                Réinitialiser les filtres
+              </Button>
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard key={product._id} product={product} />
+              {filteredProducts.map((product, index) => (
+                <div
+                  key={product._id}
+                  className="stagger-item"
+                  style={{ animationDelay: `${index * 0.05}s` }}
+                >
+                  <ProductCard product={product} />
+                </div>
               ))}
             </div>
           )}

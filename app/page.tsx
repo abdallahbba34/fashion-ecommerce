@@ -1,9 +1,66 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import Button from '@/components/ui/Button';
-import { ArrowRight, TruckIcon, ShieldCheck, HeadphonesIcon } from 'lucide-react';
+import ProductCard from '@/components/ProductCard';
+import { ProductGridSkeleton } from '@/components/ui/Skeleton';
+import { ArrowRight, TruckIcon, ShieldCheck, HeadphonesIcon, Sparkles, TrendingUp, Tag, Star } from 'lucide-react';
 
 export default function HomePage() {
+  const [allProducts, setAllProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    console.log('🚀 HomePage mounted, starting fetch...');
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      console.log('🔄 Fetching products for homepage...');
+      const response = await fetch('/api/products?limit=100');
+      console.log('📡 Response status:', response.status);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Products fetched:', data.products?.length || 0);
+        console.log('📦 Products data:', data.products);
+        setAllProducts(data.products || []);
+      } else {
+        console.error('❌ Failed to fetch products:', response.status, response.statusText);
+      }
+    } catch (error) {
+      console.error('❌ Error fetching products:', error);
+    } finally {
+      console.log('✨ Setting loading to false');
+      setLoading(false);
+    }
+  };
+
+  // Get different product sections
+  const featuredProducts = allProducts
+    .filter(p => p.featured || p.bestseller)
+    .slice(0, 4);
+
+  const newProducts = allProducts
+    .filter(p => p.newArrival)
+    .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+    .slice(0, 4);
+
+  const allDisplayProducts = allProducts.slice(0, 8);
+
+  // Debug logs - runs on every render
+  useEffect(() => {
+    console.log('🏪 Shop Display:', {
+      total: allProducts.length,
+      featured: featuredProducts.length,
+      new: newProducts.length,
+      display: allDisplayProducts.length,
+      loading
+    });
+  }, [allProducts, loading]);
   const featuredCategories = [
     {
       name: 'Nouveautés Femmes',
@@ -42,33 +99,86 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* Hero Section */}
+      {/* Hero Section - Compact */}
       <section className="relative bg-gradient-to-r from-gray-900 to-gray-700 text-white">
-        <div className="container mx-auto px-4 py-24 md:py-32">
-          <div className="max-w-2xl">
-            <h1 className="text-4xl md:text-6xl font-bold mb-6 animate-fade-in">
-              Nouvelle Collection
-              <br />
-              Printemps/Été 2025
-            </h1>
-            <p className="text-lg md:text-xl mb-8 text-gray-300 animate-slide-up">
-              Découvrez les dernières tendances mode avec des pièces uniques
-              et élégantes pour toutes les occasions.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4">
+        <div className="container mx-auto px-4 py-8 md:py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            {/* Texte à gauche */}
+            <div className="flex-1">
+              <h1 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in">
+                Nouvelle Collection
+                <br />
+                Printemps/Été 2025
+              </h1>
+              <p className="text-base md:text-lg text-gray-300 animate-slide-up">
+                Découvrez les dernières tendances mode avec des pièces uniques
+                et élégantes pour toutes les occasions.
+              </p>
+            </div>
+
+            {/* Boutons à droite */}
+            <div className="flex flex-col sm:flex-row gap-4 md:flex-shrink-0">
               <Link href="/products?filter=new">
-                <Button size="lg" className="w-full sm:w-auto">
+                <Button size="lg" className="w-full sm:w-auto whitespace-nowrap">
                   Découvrir
                   <ArrowRight className="ml-2" size={20} />
                 </Button>
               </Link>
               <Link href="/products?filter=sale">
-                <Button variant="outline" size="lg" className="w-full sm:w-auto bg-white">
+                <Button variant="outline" size="lg" className="w-full sm:w-auto bg-white whitespace-nowrap">
                   Voir les Soldes
                 </Button>
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Shop Window - Vitrine de la Boutique */}
+      <section className="py-16 bg-gradient-to-b from-white to-gray-50">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-3 mb-3">
+              <Star className="text-yellow-500" size={32} fill="currentColor" />
+              <h2 className="text-4xl font-bold">Vitrine de la Boutique</h2>
+              <Star className="text-yellow-500" size={32} fill="currentColor" />
+            </div>
+            <p className="text-gray-600 text-lg">Découvrez notre sélection de produits phares</p>
+          </div>
+
+          {loading ? (
+            <ProductGridSkeleton count={8} />
+          ) : allDisplayProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {allDisplayProducts.map((product, index) => (
+                <div
+                  key={product._id}
+                  className="stagger-item"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-lg mb-4">Aucun produit disponible pour le moment</p>
+              <Link href="/products">
+                <Button>Explorer tous les produits</Button>
+              </Link>
+            </div>
+          )}
+
+          {!loading && allProducts.length > 8 && (
+            <div className="text-center mt-8">
+              <Link href="/products">
+                <Button size="lg" className="gap-2">
+                  Voir tous les produits ({allProducts.length})
+                  <ArrowRight size={20} />
+                </Button>
+              </Link>
+            </div>
+          )}
         </div>
       </section>
 
@@ -113,6 +223,102 @@ export default function HomePage() {
                 <p className="text-gray-600">{feature.description}</p>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* New Arrivals Section */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-8">
+            <div className="animate-slideInLeft">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="text-yellow-500" size={24} />
+                <h2 className="text-3xl font-bold">Nouveautés</h2>
+              </div>
+              <p className="text-gray-600">Découvrez nos dernières arrivées</p>
+            </div>
+            <Link href="/products?filter=new" className="animate-slideInRight">
+              <Button variant="outline" className="gap-2">
+                Voir tout <ArrowRight size={16} />
+              </Button>
+            </Link>
+          </div>
+
+          {loading ? (
+            <ProductGridSkeleton count={4} />
+          ) : newProducts.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {newProducts.map((product, index) => (
+                <div
+                  key={product._id}
+                  className="stagger-item"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <ProductCard product={product} />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 text-gray-500">
+              Aucune nouveauté pour le moment
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Featured Products Section */}
+      {featuredProducts.length > 0 && (
+        <section className="py-16 bg-gray-50">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between mb-8">
+              <div className="animate-slideInLeft">
+                <div className="flex items-center gap-2 mb-2">
+                  <TrendingUp className="text-blue-500" size={24} />
+                  <h2 className="text-3xl font-bold">Produits Vedettes</h2>
+                </div>
+                <p className="text-gray-600">Nos meilleures ventes du moment</p>
+              </div>
+              <Link href="/products" className="animate-slideInRight">
+                <Button variant="outline" className="gap-2">
+                  Tout parcourir <ArrowRight size={16} />
+                </Button>
+              </Link>
+            </div>
+
+            {loading ? (
+              <ProductGridSkeleton count={4} />
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                {featuredProducts.map((product, index) => (
+                  <div
+                    key={product._id}
+                    className="stagger-item"
+                    style={{ animationDelay: `${index * 0.1}s` }}
+                  >
+                    <ProductCard product={product} />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* Promotional Banner */}
+      <section className="py-16 bg-gradient-to-r from-purple-600 to-pink-600 text-white animate-gradient">
+        <div className="container mx-auto px-4 text-center">
+          <div className="max-w-3xl mx-auto animate-scaleIn">
+            <Tag size={48} className="mx-auto mb-4 animate-bounce-gentle" />
+            <h2 className="text-4xl font-bold mb-4">Offres Spéciales</h2>
+            <p className="text-xl mb-8 text-white/90">
+              Jusqu'à -30% sur une sélection de produits
+            </p>
+            <Link href="/products?filter=sale">
+              <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 font-bold">
+                Profiter des soldes
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

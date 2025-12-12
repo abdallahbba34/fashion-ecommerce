@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { ArrowLeft, Plus, X } from 'lucide-react';
+import { ArrowLeft, Plus, X, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Variant {
@@ -42,6 +42,7 @@ export default function NewProductPage() {
   const [variants, setVariants] = useState<Variant[]>([
     { size: '', color: '', stock: 0, sku: '' }
   ]);
+  const [uploadingImage, setUploadingImage] = useState<number | null>(null);
 
   // Handle basic form changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -119,27 +120,170 @@ export default function NewProductPage() {
     setVariants(prev => prev.filter((_, i) => i !== index));
   };
 
+  // Handle image upload
+  const handleImageUpload = async (index: number, file: File) => {
+    if (!file) {
+      toast.error('Aucun fichier sélectionné');
+      return;
+    }
+
+    // Validation côté client
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif'];
+    if (!validTypes.includes(file.type)) {
+      toast.error(`Type de fichier invalide: ${file.type}. Utilisez JPG, PNG, WEBP ou GIF`);
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      toast.error(`Fichier trop volumineux: ${(file.size / 1024 / 1024).toFixed(2)} MB. Maximum: 5 MB`);
+      return;
+    }
+
+    setUploadingImage(index);
+    console.log(`📤 Upload image [${index}]:`, {
+      name: file.name,
+      type: file.type,
+      size: `${(file.size / 1024).toFixed(2)} KB`
+    });
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+      console.log(`📥 Réponse upload [${index}]:`, data);
+
+      if (!response.ok) {
+        // Gestion détaillée des erreurs
+        if (data.receivedType) {
+          throw new Error(`${data.error}. Type reçu: ${data.receivedType}`);
+        } else if (data.receivedSize) {
+          throw new Error(`${data.error}. Taille reçue: ${data.receivedSize}`);
+        } else {
+          throw new Error(data.error || data.message || 'Erreur lors de l\'upload');
+        }
+      }
+
+      // Update the image URL in the state
+      setImages(prev => {
+        const newImages = [...prev];
+        newImages[index] = data.url;
+        return newImages;
+      });
+
+      toast.success(`✅ ${file.name} uploadé avec succès !`);
+    } catch (error: any) {
+      console.error(`❌ Error uploading image [${index}]:`, error);
+      toast.error(error.message || 'Erreur lors de l\'upload de l\'image');
+    } finally {
+      setUploadingImage(null);
+    }
+  };
+
+  // Validate and fix image paths
+  const validateAndFixImagePaths = (imageUrls: string[]): { fixed: string[], warnings: string[] } => {
+    const fixed: string[] = [];
+    const warnings: string[] = [];
+
+    imageUrls.forEach((url, index) => {
+      if (!url || url.trim() === '') return;
+
+      const trimmedUrl = url.trim();
+
+      // Detect common errors
+      if (trimmedUrl.startsWith('/image/')) {
+        // Missing 's' in /images/
+        const corrected = trimmedUrl.replace('/image/', '/images/');
+        fixed.push(corrected);
+        warnings.push(`Image ${index + 1}: Corrigé "/image/" → "/images/" (${corrected})`);
+      } else if (trimmedUrl.match(/^[A-Z]:\\/i)) {
+        // Windows absolute path
+        warnings.push(`Image ${index + 1}: Chemin Windows détecté. Utilisez un chemin web (ex: /images/...)`);
+      } else if (trimmedUrl.startsWith('\\')) {
+        // Backslashes
+        warnings.push(`Image ${index + 1}: Utilisez / au lieu de \\ dans les chemins`);
+      } else {
+        fixed.push(trimmedUrl);
+      }
+    });
+
+    return { fixed, warnings };
+  };
+
   // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation côté client
+    const validationErrors: string[] = [];
+
+    if (!formData.name || !formData.name.trim()) {
+      validationErrors.push('Le nom du produit est requis');
+    }
+
+    if (!formData.slug || !formData.slug.trim()) {
+      validationErrors.push('Le slug est requis');
+    }
+
+    if (!formData.description || !formData.description.trim()) {
+      validationErrors.push('La description est requise');
+    }
+
+    if (!formData.price || parseFloat(formData.price) <= 0) {
+      validationErrors.push('Le prix doit être supérieur à 0');
+    }
+
+    if (!formData.category) {
+      validationErrors.push('La catégorie est requise');
+    }
+
+    // Filter out empty values
+    const rawImages = images.filter(img => img.trim() !== '');
+    const filteredSizes = sizes.filter(size => size.trim() !== '');
+    const filteredColors = colors.filter(color => color.trim() !== '');
+    const filteredVariants = variants.filter(v => v.size && v.color);
+
+    // Validate and fix image paths
+    const { fixed: filteredImages, warnings: imageWarnings } = validateAndFixImagePaths(rawImages);
+
+    // Show image path warnings
+    if (imageWarnings.length > 0) {
+      imageWarnings.forEach(warning => {
+        toast.success(`✅ ${warning}`, { duration: 5000 });
+      });
+    }
+
+    // Validation: au moins une variante
+    if (filteredVariants.length === 0) {
+      validationErrors.push('Au moins une variante (taille + couleur) est requise');
+    }
+
+    // Afficher toutes les erreurs de validation
+    if (validationErrors.length > 0) {
+      validationErrors.forEach(error => toast.error(error));
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Filter out empty values
-      const filteredImages = images.filter(img => img.trim() !== '');
-      const filteredSizes = sizes.filter(size => size.trim() !== '');
-      const filteredColors = colors.filter(color => color.trim() !== '');
-      const filteredVariants = variants.filter(v => v.size && v.color);
-
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
         compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : undefined,
-        images: filteredImages,
+        images: filteredImages.length > 0 ? filteredImages : ['https://via.placeholder.com/400'],
         sizes: filteredSizes,
         colors: filteredColors,
         variants: filteredVariants,
       };
+
+      console.log('📤 Envoi des données produit:', productData);
 
       const response = await fetch('/api/products', {
         method: 'POST',
@@ -149,15 +293,43 @@ export default function NewProductPage() {
         body: JSON.stringify(productData),
       });
 
+      const data = await response.json();
+      console.log('📥 Réponse API:', data);
+
       if (!response.ok) {
-        throw new Error('Erreur lors de la création du produit');
+        // Gestion des différents types d'erreurs
+        if (data.errors && Array.isArray(data.errors)) {
+          // Erreurs multiples
+          data.errors.forEach((error: string) => toast.error(error));
+          throw new Error('Erreurs de validation');
+        } else if (data.error) {
+          // Erreur unique
+          if (data.suggestion) {
+            // Cas spécial: slug déjà utilisé avec suggestion
+            toast.error(`${data.error}. Suggestion: ${data.suggestion}`);
+          } else {
+            toast.error(data.error);
+          }
+          throw new Error(data.error);
+        } else {
+          throw new Error('Erreur lors de la création du produit');
+        }
       }
 
-      toast.success('Produit créé avec succès !');
-      router.push('/admin/products');
-    } catch (error) {
-      console.error('Error creating product:', error);
-      toast.error('Erreur lors de la création du produit');
+      toast.success('✅ Produit créé avec succès !');
+
+      // Redirection après un court délai pour que l'utilisateur voie le message
+      setTimeout(() => {
+        router.push('/admin/products');
+      }, 1000);
+
+    } catch (error: any) {
+      console.error('❌ Error creating product:', error);
+
+      // Ne pas afficher de toast si on en a déjà affiché
+      if (!error.message.includes('validation')) {
+        toast.error(error.message || 'Erreur lors de la création du produit');
+      }
     } finally {
       setLoading(false);
     }
@@ -246,26 +418,89 @@ export default function NewProductPage() {
             {/* Images */}
             <Card className="p-6">
               <h2 className="text-xl font-semibold mb-4">Images</h2>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <p className="text-sm text-blue-800 font-medium mb-2">💡 Format des chemins d'images :</p>
+                <ul className="text-sm text-blue-700 space-y-1 ml-4">
+                  <li>✅ Correct : <code className="bg-blue-100 px-2 py-0.5 rounded">/images/produit.jpg</code></li>
+                  <li>❌ Incorrect : <code className="bg-red-100 px-2 py-0.5 rounded">/image/produit.jpg</code> (manque le "s")</li>
+                  <li>❌ Incorrect : <code className="bg-red-100 px-2 py-0.5 rounded">C:\ecom\public\images\...</code> (chemin Windows)</li>
+                </ul>
+              </div>
 
               <div className="space-y-3">
-                {images.map((image, index) => (
-                  <div key={index} className="flex gap-2">
-                    <Input
-                      placeholder="URL de l'image"
-                      value={image}
-                      onChange={(e) => handleArrayChange(index, e.target.value, setImages)}
-                    />
-                    {images.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeArrayField(index, setImages)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded"
-                      >
-                        <X size={20} />
-                      </button>
+                {images.map((image, index) => {
+                  // Validation en temps réel
+                  const hasError = image && (
+                    image.startsWith('/image/') ||
+                    image.match(/^[A-Z]:\\/i) ||
+                    image.startsWith('\\')
+                  );
+                  const isCorrect = image && image.startsWith('/images/') && !image.includes('\\');
+
+                  return (
+                    <div key={index} className="space-y-2">
+                      <div className="flex gap-2 items-start">
+                        <div className="flex-1">
+                          <Input
+                            placeholder="URL de l'image ou uploadez une image ci-dessous"
+                            value={image}
+                            onChange={(e) => handleArrayChange(index, e.target.value, setImages)}
+                            className={hasError ? 'border-red-500 focus:ring-red-500' : isCorrect ? 'border-green-500 focus:ring-green-500' : ''}
+                          />
+                          {hasError && (
+                            <p className="text-xs text-red-600 mt-1">
+                              ⚠️ Chemin incorrect - Utilisez /images/ au lieu de /image/
+                            </p>
+                          )}
+                          {isCorrect && (
+                            <p className="text-xs text-green-600 mt-1">
+                              ✓ Chemin correct
+                            </p>
+                          )}
+                        </div>
+                      {images.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeArrayField(index, setImages)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded"
+                        >
+                          <X size={20} />
+                        </button>
+                      )}
+                      </div>
+                      <div className="flex gap-2">
+                      <label className="flex-1">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleImageUpload(index, file);
+                          }}
+                          className="hidden"
+                          disabled={uploadingImage === index}
+                        />
+                        <div className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer flex items-center justify-center text-sm text-gray-600">
+                          <Upload size={16} className="mr-2" />
+                          {uploadingImage === index ? 'Upload en cours...' : 'Télécharger une image'}
+                        </div>
+                      </label>
+                    </div>
+                    {image && (
+                      <div className="mt-2">
+                        <img
+                          src={image}
+                          alt={`Preview ${index + 1}`}
+                          className="h-32 w-32 object-cover rounded border"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400';
+                          }}
+                        />
+                      </div>
                     )}
-                  </div>
-                ))}
+                    </div>
+                  );
+                })}
                 <button
                   type="button"
                   onClick={() => addArrayField(setImages)}

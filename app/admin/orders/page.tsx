@@ -1,44 +1,73 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import { Search, Eye } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
+import toast from 'react-hot-toast';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+
+interface Order {
+  _id: string;
+  orderNumber: string;
+  customerInfo: {
+    firstName: string;
+    lastName: string;
+  };
+  shippingAddress: {
+    wilaya: string;
+  };
+  total: number;
+  status: string;
+  createdAt: string;
+}
 
 export default function AdminOrdersPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock orders - will be replaced with API call
-  const orders = [
-    {
-      _id: '1',
-      orderNumber: 'ORD-001',
-      customer: 'Ahmed Benali',
-      date: '09/12/2025',
-      total: 4500,
-      status: 'pending',
-      wilaya: 'Alger',
-    },
-    {
-      _id: '2',
-      orderNumber: 'ORD-002',
-      customer: 'Sarah Amara',
-      date: '09/12/2025',
-      total: 8200,
-      status: 'confirmed',
-      wilaya: 'Oran',
-    },
-    {
-      _id: '3',
-      orderNumber: 'ORD-003',
-      customer: 'Karim Meziane',
-      date: '08/12/2025',
-      total: 6750,
-      status: 'shipped',
-      wilaya: 'Constantine',
-    },
-  ];
+  useEffect(() => {
+    fetchOrders();
+  }, [statusFilter]);
+
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
+      const queryParams = new URLSearchParams();
+      if (statusFilter !== 'all') {
+        queryParams.append('status', statusFilter);
+      }
+
+      const response = await fetch(`/api/orders?${queryParams.toString()}`);
+
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des commandes');
+      }
+
+      const data = await response.json();
+      setOrders(data.orders || []);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      toast.error('Erreur lors du chargement des commandes');
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Filter by search query
+  const filteredOrders = orders.filter(order => {
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    return (
+      order.orderNumber.toLowerCase().includes(query) ||
+      `${order.customerInfo.firstName} ${order.customerInfo.lastName}`.toLowerCase().includes(query)
+    );
+  });
 
   const statusColors: Record<string, string> = {
     pending: 'bg-yellow-100 text-yellow-800',
@@ -93,40 +122,56 @@ export default function AdminOrdersPage() {
 
         {/* Orders Table */}
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="border-b">
-              <tr className="text-left text-sm text-gray-600">
-                <th className="pb-3">N° Commande</th>
-                <th className="pb-3">Client</th>
-                <th className="pb-3">Date</th>
-                <th className="pb-3">Wilaya</th>
-                <th className="pb-3">Montant</th>
-                <th className="pb-3">Statut</th>
-                <th className="pb-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              {orders.map((order) => (
-                <tr key={order._id} className="border-b hover:bg-gray-50">
-                  <td className="py-4 font-medium">{order.orderNumber}</td>
-                  <td className="py-4">{order.customer}</td>
-                  <td className="py-4">{order.date}</td>
-                  <td className="py-4">{order.wilaya}</td>
-                  <td className="py-4 font-semibold">{formatPrice(order.total)}</td>
-                  <td className="py-4">
-                    <span className={`px-2 py-1 rounded text-xs ${statusColors[order.status]}`}>
-                      {statusLabels[order.status]}
-                    </span>
-                  </td>
-                  <td className="py-4 text-right">
-                    <button className="p-2 hover:bg-gray-200 rounded">
-                      <Eye size={16} />
-                    </button>
-                  </td>
+          {loading ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Chargement des commandes...</p>
+            </div>
+          ) : filteredOrders.length === 0 ? (
+            <div className="text-center py-8">
+              <p className="text-gray-500">Aucune commande trouvée.</p>
+            </div>
+          ) : (
+            <table className="w-full">
+              <thead className="border-b">
+                <tr className="text-left text-sm text-gray-600">
+                  <th className="pb-3">N° Commande</th>
+                  <th className="pb-3">Client</th>
+                  <th className="pb-3">Date</th>
+                  <th className="pb-3">Wilaya</th>
+                  <th className="pb-3">Montant</th>
+                  <th className="pb-3">Statut</th>
+                  <th className="pb-3 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="text-sm">
+                {filteredOrders.map((order) => (
+                  <tr key={order._id} className="border-b hover:bg-gray-50">
+                    <td className="py-4 font-medium">{order.orderNumber}</td>
+                    <td className="py-4">
+                      {order.customerInfo.firstName} {order.customerInfo.lastName}
+                    </td>
+                    <td className="py-4">
+                      {format(new Date(order.createdAt), 'dd/MM/yyyy', { locale: fr })}
+                    </td>
+                    <td className="py-4">{order.shippingAddress.wilaya}</td>
+                    <td className="py-4 font-semibold">{formatPrice(order.total)}</td>
+                    <td className="py-4">
+                      <span className={`px-2 py-1 rounded text-xs ${statusColors[order.status]}`}>
+                        {statusLabels[order.status]}
+                      </span>
+                    </td>
+                    <td className="py-4 text-right">
+                      <Link href={`/admin/orders/${order._id}`}>
+                        <button className="p-2 hover:bg-gray-200 rounded" title="Voir les détails">
+                          <Eye size={16} />
+                        </button>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </Card>
     </div>

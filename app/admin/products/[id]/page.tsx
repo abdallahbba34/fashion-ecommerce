@@ -173,6 +173,18 @@ export default function EditProductPage() {
   // Submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation
+    if (!formData.name || !formData.slug || !formData.description || !formData.price || !formData.category) {
+      toast.error('Veuillez remplir tous les champs obligatoires (*)');
+      return;
+    }
+
+    if (parseFloat(formData.price) <= 0) {
+      toast.error('Le prix doit être supérieur à 0');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -182,11 +194,18 @@ export default function EditProductPage() {
       const filteredColors = colors.filter(color => color.trim() !== '');
       const filteredVariants = variants.filter(v => v.size && v.color);
 
+      // Validation: au moins une variante
+      if (filteredVariants.length === 0) {
+        toast.error('Veuillez ajouter au moins une variante (taille + couleur)');
+        setLoading(false);
+        return;
+      }
+
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
         compareAtPrice: formData.compareAtPrice ? parseFloat(formData.compareAtPrice) : undefined,
-        images: filteredImages,
+        images: filteredImages.length > 0 ? filteredImages : ['https://via.placeholder.com/400'],
         sizes: filteredSizes,
         colors: filteredColors,
         variants: filteredVariants,
@@ -201,14 +220,15 @@ export default function EditProductPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Erreur lors de la mise à jour du produit');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erreur lors de la mise à jour du produit');
       }
 
       toast.success('Produit mis à jour avec succès !');
       router.push('/admin/products');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating product:', error);
-      toast.error('Erreur lors de la mise à jour du produit');
+      toast.error(error.message || 'Erreur lors de la mise à jour du produit');
     } finally {
       setLoading(false);
     }

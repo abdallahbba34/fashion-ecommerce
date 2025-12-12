@@ -1,35 +1,124 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { Package, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import Card from '@/components/ui/Card';
+import { formatPrice } from '@/lib/utils';
+import { format } from 'date-fns';
+import { fr } from 'date-fns/locale';
+import toast from 'react-hot-toast';
+
+interface Stats {
+  orders: { total: number; change: number; positive: boolean };
+  products: { total: number; change: number; positive: boolean };
+  customers: { total: number; change: number; positive: boolean };
+  revenue: { total: number; change: number; positive: boolean };
+}
+
+interface RecentOrder {
+  _id: string;
+  orderNumber: string;
+  customerInfo: {
+    firstName: string;
+    lastName: string;
+  };
+  createdAt: string;
+  total: number;
+  status: string;
+}
+
+const statusColors: Record<string, string> = {
+  pending: 'bg-yellow-100 text-yellow-800',
+  confirmed: 'bg-blue-100 text-blue-800',
+  preparing: 'bg-purple-100 text-purple-800',
+  shipped: 'bg-indigo-100 text-indigo-800',
+  delivered: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+};
+
+const statusLabels: Record<string, string> = {
+  pending: 'En attente',
+  confirmed: 'Confirmée',
+  preparing: 'En préparation',
+  shipped: 'Expédiée',
+  delivered: 'Livrée',
+  cancelled: 'Annulée',
+};
 
 export default function AdminDashboard() {
-  const stats = [
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [recentOrders, setRecentOrders] = useState<RecentOrder[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const fetchStats = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/stats');
+
+      if (!response.ok) {
+        throw new Error('Erreur lors du chargement des statistiques');
+      }
+
+      const data = await response.json();
+      setStats(data.stats);
+      setRecentOrders(data.recentOrders || []);
+    } catch (error) {
+      console.error('Error fetching stats:', error);
+      toast.error('Erreur lors du chargement des statistiques');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-gray-500">Chargement des statistiques...</p>
+      </div>
+    );
+  }
+
+  if (!stats) {
+    return (
+      <div className="flex items-center justify-center h-96">
+        <p className="text-gray-500">Impossible de charger les statistiques</p>
+      </div>
+    );
+  }
+
+  const statCards = [
     {
       icon: ShoppingCart,
       label: 'Commandes',
-      value: '156',
-      change: '+12%',
-      positive: true,
+      value: stats.orders.total.toString(),
+      change: `${stats.orders.change >= 0 ? '+' : ''}${stats.orders.change}%`,
+      positive: stats.orders.positive,
     },
     {
       icon: Package,
       label: 'Produits',
-      value: '89',
-      change: '+5',
-      positive: true,
+      value: stats.products.total.toString(),
+      change: `+${stats.products.change}`,
+      positive: stats.products.positive,
     },
     {
       icon: Users,
       label: 'Clients',
-      value: '1,234',
-      change: '+23%',
-      positive: true,
+      value: stats.customers.total.toLocaleString('fr-DZ'),
+      change: `${stats.customers.change >= 0 ? '+' : ''}${stats.customers.change}%`,
+      positive: stats.customers.positive,
     },
     {
       icon: TrendingUp,
       label: 'Revenus',
-      value: '145,000 DA',
-      change: '+18%',
-      positive: true,
+      value: formatPrice(stats.revenue.total),
+      change: `${stats.revenue.change >= 0 ? '+' : ''}${stats.revenue.change}%`,
+      positive: stats.revenue.positive,
     },
   ];
 
@@ -39,7 +128,7 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {stats.map((stat) => (
+        {statCards.map((stat) => (
           <Card key={stat.label} className="p-6">
             <div className="flex items-start justify-between">
               <div>
@@ -59,43 +148,51 @@ export default function AdminDashboard() {
 
       {/* Recent Orders */}
       <Card className="p-6">
-        <h2 className="text-xl font-semibold mb-4">Commandes récentes</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-semibold">Commandes récentes</h2>
+          <Link href="/admin/orders" className="text-sm text-gray-600 hover:text-black">
+            Voir tout →
+          </Link>
+        </div>
         <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="border-b">
-              <tr className="text-left text-sm text-gray-600">
-                <th className="pb-3">N° Commande</th>
-                <th className="pb-3">Client</th>
-                <th className="pb-3">Date</th>
-                <th className="pb-3">Montant</th>
-                <th className="pb-3">Statut</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              <tr className="border-b">
-                <td className="py-3 font-medium">#ORD-001</td>
-                <td className="py-3">Ahmed Benali</td>
-                <td className="py-3">09/12/2025</td>
-                <td className="py-3">4,500 DA</td>
-                <td className="py-3">
-                  <span className="px-2 py-1 bg-yellow-100 text-yellow-800 rounded text-xs">
-                    En attente
-                  </span>
-                </td>
-              </tr>
-              <tr className="border-b">
-                <td className="py-3 font-medium">#ORD-002</td>
-                <td className="py-3">Sarah Amara</td>
-                <td className="py-3">09/12/2025</td>
-                <td className="py-3">8,200 DA</td>
-                <td className="py-3">
-                  <span className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs">
-                    Confirmée
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
+          {recentOrders.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">Aucune commande récente</p>
+          ) : (
+            <table className="w-full">
+              <thead className="border-b">
+                <tr className="text-left text-sm text-gray-600">
+                  <th className="pb-3">N° Commande</th>
+                  <th className="pb-3">Client</th>
+                  <th className="pb-3">Date</th>
+                  <th className="pb-3">Montant</th>
+                  <th className="pb-3">Statut</th>
+                </tr>
+              </thead>
+              <tbody className="text-sm">
+                {recentOrders.map((order) => (
+                  <tr key={order._id} className="border-b hover:bg-gray-50">
+                    <td className="py-3 font-medium">
+                      <Link href={`/admin/orders/${order._id}`} className="hover:underline">
+                        {order.orderNumber}
+                      </Link>
+                    </td>
+                    <td className="py-3">
+                      {order.customerInfo.firstName} {order.customerInfo.lastName}
+                    </td>
+                    <td className="py-3">
+                      {format(new Date(order.createdAt), 'dd/MM/yyyy', { locale: fr })}
+                    </td>
+                    <td className="py-3">{formatPrice(order.total)}</td>
+                    <td className="py-3">
+                      <span className={`px-2 py-1 rounded text-xs ${statusColors[order.status] || 'bg-gray-100 text-gray-800'}`}>
+                        {statusLabels[order.status] || order.status}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </Card>
     </div>
