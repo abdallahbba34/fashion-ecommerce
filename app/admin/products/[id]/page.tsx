@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
-import { ArrowLeft, Plus, X } from 'lucide-react';
+import { ArrowLeft, Plus, X, Upload } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 interface Variant {
@@ -23,6 +23,7 @@ export default function EditProductPage() {
 
   const [loading, setLoading] = useState(false);
   const [loadingProduct, setLoadingProduct] = useState(true);
+  const [uploadingImage, setUploadingImage] = useState<number | null>(null);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -147,6 +148,51 @@ export default function EditProductPage() {
     setter: React.Dispatch<React.SetStateAction<string[]>>
   ) => {
     setter(prev => prev.filter((_, i) => i !== index));
+  };
+
+  // Handle image upload
+  const handleImageUpload = async (index: number, file: File) => {
+    if (!file) return;
+
+    // Validation
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error('L\'image ne doit pas dépasser 5 MB');
+      return;
+    }
+
+    if (!['image/jpeg', 'image/jpg', 'image/png', 'image/webp'].includes(file.type)) {
+      toast.error('Format non supporté. Utilisez JPG, PNG ou WebP');
+      return;
+    }
+
+    setUploadingImage(index);
+
+    try {
+      const formData = new FormData();
+      formData.append('image', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Erreur lors de l\'upload');
+      }
+
+      const data = await response.json();
+
+      // Update image URL in the array
+      handleArrayChange(index, data.url, setImages);
+
+      toast.success('Image uploadée avec succès !');
+    } catch (error: any) {
+      console.error('Error uploading image:', error);
+      toast.error(error.message || 'Erreur lors de l\'upload de l\'image');
+    } finally {
+      setUploadingImage(null);
+    }
   };
 
   // Handle variants
@@ -331,20 +377,56 @@ export default function EditProductPage() {
 
               <div className="space-y-3">
                 {images.map((image, index) => (
-                  <div key={index} className="flex gap-2">
-                    <Input
-                      placeholder="https://exemple.com/image.jpg"
-                      value={image}
-                      onChange={(e) => handleArrayChange(index, e.target.value, setImages)}
-                    />
-                    {images.length > 1 && (
-                      <button
-                        type="button"
-                        onClick={() => removeArrayField(index, setImages)}
-                        className="p-2 text-red-600 hover:bg-red-50 rounded"
-                      >
-                        <X size={20} />
-                      </button>
+                  <div key={index}>
+                    <div className="flex gap-2">
+                      <Input
+                        placeholder="URL de l'image ou uploadez une image ci-dessous"
+                        value={image}
+                        onChange={(e) => handleArrayChange(index, e.target.value, setImages)}
+                      />
+                      {images.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => removeArrayField(index, setImages)}
+                          className="p-2 text-red-600 hover:bg-red-50 rounded"
+                        >
+                          <X size={20} />
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Upload button */}
+                    <div className="mt-2">
+                      <label className="cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) handleImageUpload(index, file);
+                          }}
+                          className="hidden"
+                          disabled={uploadingImage === index}
+                        />
+                        <div className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer flex items-center justify-center text-sm text-gray-600">
+                          <Upload size={16} className="mr-2" />
+                          {uploadingImage === index ? 'Upload en cours...' : 'Télécharger une image'}
+                        </div>
+                      </label>
+                    </div>
+
+                    {/* Image preview */}
+                    {image && (
+                      <div className="mt-2">
+                        <img
+                          src={image}
+                          alt={`Preview ${index + 1}`}
+                          className="h-32 w-32 object-cover rounded border"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400';
+                          }}
+                        />
+                      </div>
                     )}
                   </div>
                 ))}
