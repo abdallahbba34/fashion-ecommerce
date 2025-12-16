@@ -134,9 +134,9 @@ export default function NewProductPage() {
       return;
     }
 
-    const maxSize = 5 * 1024 * 1024; // 5MB
+    const maxSize = 10 * 1024 * 1024; // 10MB
     if (file.size > maxSize) {
-      toast.error(`Fichier trop volumineux: ${(file.size / 1024 / 1024).toFixed(2)} MB. Maximum: 5 MB`);
+      toast.error(`Fichier trop volumineux: ${(file.size / 1024 / 1024).toFixed(2)} MB. Maximum: 10 MB`);
       return;
     }
 

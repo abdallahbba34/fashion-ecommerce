@@ -155,8 +155,8 @@ export default function EditProductPage() {
     if (!file) return;
 
     // Validation
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('L\'image ne doit pas dépasser 5 MB');
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('L\'image ne doit pas dépasser 10 MB');
       return;
     }
 
