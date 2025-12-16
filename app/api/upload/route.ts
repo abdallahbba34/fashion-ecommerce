@@ -71,8 +71,8 @@ export async function POST(request: NextRequest) {
     const filepath = join(uploadDir, filename);
     await writeFile(filepath, buffer);
 
-    // Return URL
-    const url = `/uploads/${filename}`;
+    // Return URL (use API route for better compatibility)
+    const url = `/api/images/${filename}`;
 
     console.log('[Upload] ✅ Upload réussi:', url);
 
