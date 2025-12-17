@@ -8,7 +8,7 @@ export async function POST(request: NextRequest) {
     console.log('[Upload] Début de l\'upload...');
 
     const formData = await request.formData();
-    const file = formData.get('image') as File;
+    const file = formData.get('file') as File;
 
     if (!file) {
       console.error('[Upload] Aucun fichier fourni');
