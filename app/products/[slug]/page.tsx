@@ -1,51 +1,80 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { useCart } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 import Button from '@/components/ui/Button';
 import { ShoppingBag, Heart, Share2, TruckIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
-// Mock product data
-const mockProduct = {
-  _id: '1',
-  name: 'Robe Élégante Fleurie',
-  slug: 'robe-elegante-fleurie',
-  description: 'Cette robe élégante avec motifs floraux est parfaite pour toutes les occasions. Fabriquée dans un tissu de haute qualité, elle offre confort et style. La coupe flatteuse et les détails soignés en font une pièce incontournable de votre garde-robe.',
-  price: 4500,
-  compareAtPrice: 6000,
-  category: 'femmes',
-  images: ['/placeholder-1.jpg', '/placeholder-2.jpg', '/placeholder-3.jpg'],
-  variants: [
-    { size: 'S', color: 'rouge', stock: 5 },
-    { size: 'M', color: 'rouge', stock: 10 },
-    { size: 'L', color: 'rouge', stock: 3 },
-    { size: 'M', color: 'bleu', stock: 8 },
-    { size: 'L', color: 'bleu', stock: 6 },
-  ],
-  sizes: ['S', 'M', 'L', 'XL'],
-  colors: ['rouge', 'bleu', 'vert'],
-  material: '100% Coton',
-  care: 'Lavage en machine à 30°C',
-  featured: true,
-  newArrival: true,
-  bestseller: false,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+interface Product {
+  _id: string;
+  name: string;
+  slug: string;
+  description: string;
+  price: number;
+  compareAtPrice?: number;
+  category: string;
+  images: string[];
+  variants: { size: string; color: string; stock: number }[];
+  sizes: string[];
+  colors: string[];
+  material: string;
+  care: string;
+  featured: boolean;
+  newArrival: boolean;
+  bestseller: boolean;
+}
 
 export default function ProductDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const addItem = useCart((state) => state.addItem);
 
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
 
-  const product = mockProduct; // Replace with actual API call
+  // Load product data
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await fetch(`/api/products/${params.slug}`);
+        if (!response.ok) {
+          throw new Error('Produit non trouvé');
+        }
+        const data = await response.json();
+        setProduct(data);
+      } catch (error) {
+        console.error('Error loading product:', error);
+        toast.error('Produit non trouvé');
+        router.push('/products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (params.slug) {
+      fetchProduct();
+    }
+  }, [params.slug, router]);
+
+  if (loading) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center">Chargement...</div>
+      </div>
+    );
+  }
+
+  if (!product) {
+    return null;
+  }
 
   const selectedVariant = product.variants.find(
     (v) => v.size === selectedSize && v.color === selectedColor
@@ -86,22 +115,41 @@ export default function ProductDetailPage() {
         {/* Product Images */}
         <div>
           {/* Main Image */}
-          <div className="aspect-[3/4] bg-gray-100 rounded-lg mb-4 overflow-hidden">
-            <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
+          <div className="aspect-[3/4] bg-gray-100 rounded-lg mb-4 overflow-hidden relative">
+            {product.images && product.images.length > 0 ? (
+              <Image
+                src={product.images[selectedImage] || product.images[0]}
+                alt={product.name}
+                fill
+                className="object-cover"
+                sizes="(max-width: 1024px) 100vw, 50vw"
+                priority
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
+                <span className="text-gray-400">Pas d'image</span>
+              </div>
+            )}
           </div>
 
           {/* Thumbnail Images */}
           <div className="grid grid-cols-4 gap-4">
-            {[0, 1, 2, 3].map((index) => (
+            {product.images && product.images.slice(0, 4).map((image, index) => (
               <button
                 key={index}
                 onClick={() => setSelectedImage(index)}
                 className={`
-                  aspect-square bg-gray-100 rounded-lg overflow-hidden
+                  aspect-square bg-gray-100 rounded-lg overflow-hidden relative
                   ${selectedImage === index ? 'ring-2 ring-black' : ''}
                 `}
               >
-                <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300" />
+                <Image
+                  src={image}
+                  alt={`${product.name} ${index + 1}`}
+                  fill
+                  className="object-cover"
+                  sizes="150px"
+                />
               </button>
             ))}
           </div>
@@ -156,7 +204,21 @@ export default function ProductDetailPage() {
             <label className="block font-medium mb-3">
               Taille: {selectedSize && <span className="font-normal text-gray-600">{selectedSize}</span>}
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
+              {/* Option Toute */}
+              <button
+                onClick={() => setSelectedSize('Toute')}
+                className={`
+                  px-6 py-3 rounded-lg border-2 font-medium transition-all
+                  ${selectedSize === 'Toute'
+                    ? 'bg-black text-white border-black'
+                    : 'bg-white text-gray-900 border-gray-300 hover:border-black'
+                  }
+                `}
+              >
+                Toute
+              </button>
+              {/* Tailles du produit */}
               {product.sizes.map((size) => (
                 <button
                   key={size}
