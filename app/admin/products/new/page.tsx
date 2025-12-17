@@ -697,7 +697,7 @@ export default function NewProductPage() {
                   >
                     <option value="">Sélectionner...</option>
                     <option value="femmes">Femmes</option>
-                    <option value="hommes">Hommes</option>
+                    <option value="enfants">Enfants</option>
                     <option value="accessoires">Accessoires</option>
                   </select>
                 </div>

@@ -11,7 +11,7 @@ export default function Footer() {
             <h3 className="text-white text-lg font-bold mb-4">FASHION</h3>
             <p className="text-sm">
               Votre destination mode en Algérie. Découvrez les dernières tendances
-              et styles pour hommes et femmes.
+              et styles pour femmes et enfants.
             </p>
           </div>
 

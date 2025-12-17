@@ -68,9 +68,9 @@ export default function HomePage() {
       href: '/products?category=femmes&filter=new',
     },
     {
-      name: 'Collection Hommes',
+      name: 'Collection Enfants',
       image: '/images/men-collection.jpg',
-      href: '/products?category=hommes',
+      href: '/products?category=enfants',
     },
     {
       name: 'Accessoires',

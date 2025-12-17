@@ -11,7 +11,7 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'FASHION - Boutique Mode en Algérie',
-  description: 'Découvrez les dernières tendances mode pour hommes et femmes. Livraison dans toute l\'Algérie.',
+  description: 'Découvrez les dernières tendances mode pour femmes et enfants. Livraison dans toute l\'Algérie.',
 };
 
 export default function RootLayout({

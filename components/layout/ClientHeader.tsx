@@ -12,7 +12,7 @@ export default function ClientHeader() {
   const categories = [
     { name: 'Nouveautés', href: '/products?filter=new' },
     { name: 'Femmes', href: '/products?category=femmes' },
-    { name: 'Hommes', href: '/products?category=hommes' },
+    { name: 'Enfants', href: '/products?category=enfants' },
     { name: 'Accessoires', href: '/products?category=accessoires' },
     { name: 'Soldes', href: '/products?filter=sale' },
   ];

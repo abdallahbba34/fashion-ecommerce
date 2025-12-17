@@ -95,7 +95,7 @@ export default function ProductsPage() {
     return 0;
   });
 
-  const categories = ['Tous', 'Femmes', 'Hommes', 'Accessoires'];
+  const categories = ['Tous', 'Femmes', 'Enfants', 'Accessoires'];
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const priceRanges = [
     { label: 'Tous les prix', value: 'all' },
