@@ -527,9 +527,18 @@ export default function EditProductPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Tailles disponibles
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="block text-sm font-medium text-gray-700">
+                      Tailles disponibles
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setSizes(['XS', 'S', 'M', 'L', 'XL', 'XXL'])}
+                      className="text-xs px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
+                    >
+                      ✓ Toutes les tailles
+                    </button>
+                  </div>
                   <div className="space-y-2">
                     {sizes.map((size, index) => (
                       <div key={index} className="flex gap-2">
