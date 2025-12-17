@@ -170,6 +170,19 @@ export default function ProductsPage() {
             <div className="mb-6">
               <h3 className="font-semibold mb-3">Taille</h3>
               <div className="grid grid-cols-3 gap-2">
+                {/* Bouton Toutes les tailles */}
+                <button
+                  onClick={() => setSelectedSize('all')}
+                  className={`
+                    px-3 py-2 rounded border text-sm font-medium transition-colors col-span-3
+                    ${selectedSize === 'all'
+                      ? 'bg-black text-white border-black'
+                      : 'bg-white text-gray-900 border-gray-300 hover:border-black'
+                    }
+                  `}
+                >
+                  Toutes les tailles
+                </button>
                 {sizes.map((size) => (
                   <button
                     key={size}
