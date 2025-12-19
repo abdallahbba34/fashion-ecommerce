@@ -1,0 +1,42 @@
+{
+  "title": "Contactez-nous",
+  "subtitle": "Une question ? Une suggestion ? N'hésitez pas à nous contacter !",
+  "form": {
+    "title": "Envoyez-nous un message",
+    "name": "Nom complet",
+    "namePlaceholder": "Votre nom",
+    "email": "Email",
+    "emailPlaceholder": "votre.email@exemple.com",
+    "phone": "Téléphone",
+    "phonePlaceholder": "0XXX XX XX XX",
+    "subject": "Sujet",
+    "subjectPlaceholder": "L'objet de votre message",
+    "message": "Message",
+    "messagePlaceholder": "Votre message...",
+    "sending": "Envoi en cours...",
+    "send": "Envoyer le message",
+    "success": "Message envoyé avec succès ! Nous vous répondrons dans les plus brefs délais."
+  },
+  "info": {
+    "title": "Nos coordonnées",
+    "address": {
+      "label": "Adresse",
+      "line1": "Bordj Bou Arreridj",
+      "line2": "Algérie"
+    },
+    "email": {
+      "label": "Email"
+    },
+    "phone": {
+      "label": "Téléphone",
+      "availability": "Disponible 7j/7 de 9h à 20h"
+    }
+  },
+  "hours": {
+    "title": "Horaires d'ouverture",
+    "weekdays": "Lundi - Samedi",
+    "weekdaysHours": "9h - 20h",
+    "sunday": "Dimanche",
+    "sundayHours": "10h - 18h"
+  }
+}

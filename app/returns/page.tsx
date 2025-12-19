@@ -1,13 +1,17 @@
+'use client';
+
 import Card from '@/components/ui/Card';
 import { RotateCcw, CheckCircle, AlertCircle, Clock, Shield } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ReturnsPage() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Retours et Échanges</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('returns.title')}</h1>
             <p className="text-gray-600 text-lg">
               Votre satisfaction est notre priorité
             </p>
@@ -18,7 +22,7 @@ export default function ReturnsPage() {
             <div className="flex items-center gap-4 mb-4">
               <Shield size={48} />
               <div>
-                <h2 className="text-3xl font-bold">Garantie Satisfaction 48h</h2>
+                <h2 className="text-3xl font-bold">{t('returns.guarantee.title')}</h2>
                 <p className="text-xl">Retour gratuit en cas de problème</p>
               </div>
             </div>

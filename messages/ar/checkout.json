@@ -1,0 +1,48 @@
+{
+  "title": "إتمام الطلب",
+  "redirecting": "جاري التحويل...",
+  "shippingInfo": {
+    "title": "معلومات التوصيل",
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "exemple@email.com",
+    "phone": "الهاتف",
+    "phonePlaceholder": "0555 12 34 56",
+    "wilaya": "الولاية",
+    "selectWilaya": "اختر الولاية",
+    "city": "المدينة",
+    "postalCode": "الرمز البريدي",
+    "address": "العنوان الكامل",
+    "addressPlaceholder": "الشارع، الرقم، البناية...",
+    "notes": "ملاحظات الطلب (اختياري)",
+    "notesPlaceholder": "تعليمات خاصة للتوصيل...",
+    "required": "*"
+  },
+  "payment": {
+    "title": "طريقة الدفع",
+    "cashOnDelivery": "الدفع عند الاستلام",
+    "cashDescription": "ادفع نقداً عند استلام طلبك"
+  },
+  "summary": {
+    "title": "الملخص",
+    "subtotal": "المجموع الفرعي",
+    "shipping": "التوصيل",
+    "total": "الإجمالي"
+  },
+  "submit": {
+    "confirm": "تأكيد الطلب",
+    "processing": "جاري المعالجة...",
+    "terms": "بتأكيد طلبك، فإنك توافق على",
+    "termsLink": "الشروط والأحكام"
+  },
+  "errors": {
+    "requiredFields": "يرجى ملء جميع الحقول المطلوبة",
+    "error": "حدث خطأ. يرجى المحاولة مرة أخرى.",
+    "stockIssues": "تم اكتشاف مشاكل في المخزون",
+    "productNotFound": "المنتج غير موجود",
+    "variantNotFound": "الخيار غير موجود",
+    "insufficientStock": "المخزون غير كافٍ",
+    "available": "متاح"
+  },
+  "success": "تم تقديم الطلب بنجاح!"
+}

@@ -5,6 +5,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { ChevronDown, ChevronUp, MessageCircle, Send } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface FAQItem {
   question: string;
@@ -13,70 +14,71 @@ interface FAQItem {
 }
 
 export default function FAQPage() {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [comment, setComment] = useState('');
   const [email, setEmail] = useState('');
 
   const faqs: FAQItem[] = [
     {
-      category: 'Commandes',
-      question: 'Comment passer une commande ?',
-      answer: 'Parcourez notre catalogue, ajoutez les produits à votre panier, puis suivez les étapes de commande. Vous recevrez une confirmation par email.',
+      category: t('faq.categories.commandes'),
+      question: t('faq.questions.orderHow.question'),
+      answer: t('faq.questions.orderHow.answer'),
     },
     {
-      category: 'Commandes',
-      question: 'Puis-je modifier ma commande ?',
-      answer: 'Oui, vous pouvez modifier votre commande tant qu\'elle n\'a pas été expédiée. Contactez notre service client dans les plus brefs délais.',
+      category: t('faq.categories.commandes'),
+      question: t('faq.questions.orderModify.question'),
+      answer: t('faq.questions.orderModify.answer'),
     },
     {
-      category: 'Livraison',
-      question: 'Quels sont les délais de livraison ?',
-      answer: 'Nous livrons dans toute l\'Algérie sous 48 à 72 heures après confirmation de votre commande.',
+      category: t('faq.categories.livraison'),
+      question: t('faq.questions.deliveryTime.question'),
+      answer: t('faq.questions.deliveryTime.answer'),
     },
     {
-      category: 'Livraison',
-      question: 'Livrez-vous dans toute l\'Algérie ?',
-      answer: 'Oui, nous livrons dans les 58 wilayas d\'Algérie grâce à nos partenaires de livraison comme Yalidine.',
+      category: t('faq.categories.livraison'),
+      question: t('faq.questions.deliveryArea.question'),
+      answer: t('faq.questions.deliveryArea.answer'),
     },
     {
-      category: 'Livraison',
-      question: 'Quels sont les frais de livraison ?',
-      answer: 'La livraison est gratuite pour toute commande supérieure à 5000 DA. Pour les commandes inférieures, des frais de livraison s\'appliquent selon votre wilaya.',
+      category: t('faq.categories.livraison'),
+      question: t('faq.questions.deliveryCost.question'),
+      answer: t('faq.questions.deliveryCost.answer'),
     },
     {
-      category: 'Paiement',
-      question: 'Quels modes de paiement acceptez-vous ?',
-      answer: 'Nous acceptons le paiement à la livraison (espèces) et le paiement en ligne sécurisé.',
+      category: t('faq.categories.paiement'),
+      question: t('faq.questions.paymentMethods.question'),
+      answer: t('faq.questions.paymentMethods.answer'),
     },
     {
-      category: 'Paiement',
-      question: 'Le paiement en ligne est-il sécurisé ?',
-      answer: 'Oui, toutes les transactions en ligne sont sécurisées et cryptées pour protéger vos informations.',
+      category: t('faq.categories.paiement'),
+      question: t('faq.questions.paymentSecurity.question'),
+      answer: t('faq.questions.paymentSecurity.answer'),
     },
     {
-      category: 'Retours',
-      question: 'Puis-je retourner un produit ?',
-      answer: 'Oui, vous disposez de 48 heures pour retourner un produit en cas d\'anomalie ou de non-satisfaction.',
+      category: t('faq.categories.retours'),
+      question: t('faq.questions.returnAllowed.question'),
+      answer: t('faq.questions.returnAllowed.answer'),
     },
     {
-      category: 'Retours',
-      question: 'Comment faire un retour ?',
-      answer: 'Contactez notre service client dans les 48h suivant la réception. Nous organiserons la récupération du produit et procéderons au remboursement ou à l\'échange.',
+      category: t('faq.categories.retours'),
+      question: t('faq.questions.returnHow.question'),
+      answer: t('faq.questions.returnHow.answer'),
     },
     {
-      category: 'Produits',
-      question: 'Comment choisir la bonne taille ?',
-      answer: 'Consultez notre guide des tailles disponible sur chaque fiche produit. En cas de doute, n\'hésitez pas à nous contacter.',
+      category: t('faq.categories.produits'),
+      question: t('faq.questions.sizeGuide.question'),
+      answer: t('faq.questions.sizeGuide.answer'),
     },
     {
-      category: 'Produits',
-      question: 'Les produits sont-ils garantis ?',
-      answer: 'Oui, tous nos produits sont garantis contre les défauts de fabrication. Voir nos conditions générales pour plus de détails.',
+      category: t('faq.categories.produits'),
+      question: t('faq.questions.warranty.question'),
+      answer: t('faq.questions.warranty.answer'),
     },
     {
-      category: 'Compte',
-      question: 'Dois-je créer un compte pour commander ?',
-      answer: 'Non, vous pouvez commander sans créer de compte. Toutefois, un compte vous permet de suivre vos commandes et d\'accéder plus rapidement à vos informations.',
+      category: t('faq.categories.compte'),
+      question: t('faq.questions.accountRequired.question'),
+      answer: t('faq.questions.accountRequired.answer'),
     },
   ];
 
@@ -85,7 +87,7 @@ export default function FAQPage() {
   const handleSubmitComment = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulation - À implémenter avec une vraie API
-    toast.success('Merci pour votre commentaire ! Il sera examiné prochainement.');
+    toast.success(t('faq.comment.success'));
     setComment('');
     setEmail('');
   };
@@ -95,9 +97,9 @@ export default function FAQPage() {
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Foire Aux Questions</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('faq.title')}</h1>
             <p className="text-gray-600 text-lg">
-              Trouvez rapidement des réponses à vos questions
+              {t('faq.subtitle')}
             </p>
           </div>
 
@@ -145,9 +147,9 @@ export default function FAQPage() {
             <div className="flex items-center gap-3 mb-6">
               <MessageCircle size={32} className="text-blue-600" />
               <div>
-                <h2 className="text-2xl font-bold">Vous n'avez pas trouvé votre réponse ?</h2>
+                <h2 className="text-2xl font-bold">{t('faq.comment.title')}</h2>
                 <p className="text-gray-600">
-                  Laissez-nous un commentaire, nous enrichirons cette FAQ
+                  {t('faq.comment.subtitle')}
                 </p>
               </div>
             </div>
@@ -155,7 +157,7 @@ export default function FAQPage() {
             <form onSubmit={handleSubmitComment} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Votre email
+                  {t('faq.comment.email')}
                 </label>
                 <input
                   type="email"
@@ -163,13 +165,13 @@ export default function FAQPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="votre.email@exemple.com"
+                  placeholder={t('faq.comment.emailPlaceholder')}
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Votre question ou commentaire
+                  {t('faq.comment.question')}
                 </label>
                 <textarea
                   value={comment}
@@ -177,30 +179,30 @@ export default function FAQPage() {
                   required
                   rows={4}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Posez votre question ici..."
+                  placeholder={t('faq.comment.questionPlaceholder')}
                 />
               </div>
 
               <Button type="submit" className="w-full">
                 <Send size={20} className="mr-2" />
-                Envoyer ma question
+                {t('faq.comment.submit')}
               </Button>
 
               <p className="text-sm text-gray-500 text-center">
-                Nous examinerons votre question et l'ajouterons à notre FAQ si elle peut aider d'autres clients.
+                {t('faq.comment.disclaimer')}
               </p>
             </form>
           </Card>
 
           {/* Contact rapide */}
           <Card className="p-8 mt-6 bg-black text-white">
-            <h3 className="text-xl font-bold mb-4">Besoin d'aide immédiate ?</h3>
+            <h3 className="text-xl font-bold mb-4">{t('faq.help.title')}</h3>
             <p className="mb-4">
-              Notre service client est disponible 7j/7 pour répondre à toutes vos questions.
+              {t('faq.help.description')}
             </p>
             <div className="space-y-2">
-              <p>Email : <a href="mailto:contact@lasuitechic.online" className="underline">contact@lasuitechic.online</a></p>
-              <p>Adresse : Bordj Bou Arreridj, Algérie</p>
+              <p>{t('faq.help.email')} <a href="mailto:contact@lasuitechic.online" className="underline">contact@lasuitechic.online</a></p>
+              <p>{t('faq.help.address')}</p>
             </div>
           </Card>
         </div>

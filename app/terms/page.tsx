@@ -1,15 +1,19 @@
+'use client';
+
 import Card from '@/components/ui/Card';
 import { Shield, CheckCircle, AlertCircle } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function TermsPage() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Conditions Générales de Vente</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('terms.title')}</h1>
             <p className="text-gray-600">
-              Dernière mise à jour : Décembre 2025
+              {t('terms.lastUpdate')}
             </p>
           </div>
 
@@ -20,10 +24,10 @@ export default function TermsPage() {
                 <Shield size={32} className="text-green-500 flex-shrink-0" />
                 <div>
                   <h2 className="text-2xl font-bold mb-2 text-green-700">
-                    Garantie Satisfaction 48h
+                    {t('terms.guarantee.title')}
                   </h2>
                   <p className="text-lg text-gray-700">
-                    Votre satisfaction est notre priorité absolue
+                    {t('terms.guarantee.subtitle')}
                   </p>
                 </div>
               </div>
@@ -51,7 +55,7 @@ export default function TermsPage() {
 
             {/* Article 1 */}
             <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-4">1. Objet</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.article1.title')}</h2>
               <p className="text-gray-700 mb-4">
                 Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles
                 entre La Suite Chic et ses clients dans le cadre de la vente en ligne de produits de mode.
@@ -63,7 +67,7 @@ export default function TermsPage() {
 
             {/* Article 2 */}
             <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-4">2. Produits</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.article2.title')}</h2>
               <p className="text-gray-700 mb-4">
                 Nos produits sont conformes à la législation algérienne en vigueur. Les photographies
                 illustrant les produits n'ont pas de valeur contractuelle et peuvent différer légèrement
@@ -83,7 +87,7 @@ export default function TermsPage() {
 
             {/* Article 3 */}
             <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-4">3. Commandes</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.article3.title')}</h2>
               <div className="space-y-4 text-gray-700">
                 <div>
                   <h3 className="font-semibold mb-2">3.1 Processus de commande</h3>
@@ -110,7 +114,7 @@ export default function TermsPage() {
 
             {/* Article 4 */}
             <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-4">4. Prix et Paiement</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.article4.title')}</h2>
               <div className="space-y-4 text-gray-700">
                 <p>
                   Tous les prix sont affichés en Dinars Algériens (DA) et comprennent toutes les taxes applicables.
@@ -127,7 +131,7 @@ export default function TermsPage() {
 
             {/* Article 5 */}
             <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-4">5. Livraison</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.article5.title')}</h2>
               <div className="space-y-4 text-gray-700">
                 <p>
                   Les livraisons sont effectuées dans toute l'Algérie dans un délai de 48 à 72 heures
@@ -187,7 +191,7 @@ export default function TermsPage() {
 
             {/* Article 7 */}
             <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-4">7. Responsabilité</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.article7.title')}</h2>
               <p className="text-gray-700">
                 La Suite Chic s'engage à fournir des produits de qualité. Notre responsabilité ne saurait
                 être engagée en cas de force majeure ou de fait indépendant de notre volonté.
@@ -196,7 +200,7 @@ export default function TermsPage() {
 
             {/* Article 8 */}
             <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-4">8. Protection des Données</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.article8.title')}</h2>
               <p className="text-gray-700 mb-4">
                 Les informations collectées lors de votre commande sont nécessaires au traitement de celle-ci
                 et sont strictement confidentielles.
@@ -209,7 +213,7 @@ export default function TermsPage() {
 
             {/* Article 9 */}
             <Card className="p-8">
-              <h2 className="text-2xl font-bold mb-4">9. Litiges et Juridiction</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.article9.title')}</h2>
               <p className="text-gray-700 mb-4">
                 Les présentes CGV sont soumises au droit algérien. En cas de litige, une solution amiable
                 sera recherchée avant toute action judiciaire.
@@ -222,7 +226,7 @@ export default function TermsPage() {
 
             {/* Contact */}
             <Card className="p-8 bg-black text-white">
-              <h2 className="text-2xl font-bold mb-4">Questions ?</h2>
+              <h2 className="text-2xl font-bold mb-4">{t('terms.contact.title')}</h2>
               <p className="mb-4">
                 Pour toute question concernant nos conditions générales de vente, n'hésitez pas à nous contacter :
               </p>

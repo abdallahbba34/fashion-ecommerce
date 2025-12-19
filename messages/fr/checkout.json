@@ -1,0 +1,48 @@
+{
+  "title": "Finaliser la commande",
+  "redirecting": "Redirection...",
+  "shippingInfo": {
+    "title": "Informations de livraison",
+    "fullName": "Nom complet",
+    "email": "Email",
+    "emailPlaceholder": "exemple@email.com",
+    "phone": "Téléphone",
+    "phonePlaceholder": "0555 12 34 56",
+    "wilaya": "Wilaya",
+    "selectWilaya": "Sélectionnez une wilaya",
+    "city": "Ville",
+    "postalCode": "Code postal",
+    "address": "Adresse complète",
+    "addressPlaceholder": "Rue, numéro, bâtiment...",
+    "notes": "Notes de commande (optionnel)",
+    "notesPlaceholder": "Instructions spéciales pour la livraison...",
+    "required": "*"
+  },
+  "payment": {
+    "title": "Mode de paiement",
+    "cashOnDelivery": "Paiement à la livraison",
+    "cashDescription": "Payez en espèces lors de la réception de votre commande"
+  },
+  "summary": {
+    "title": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "total": "Total"
+  },
+  "submit": {
+    "confirm": "Confirmer la commande",
+    "processing": "Traitement...",
+    "terms": "En confirmant votre commande, vous acceptez nos",
+    "termsLink": "conditions générales"
+  },
+  "errors": {
+    "requiredFields": "Veuillez remplir tous les champs obligatoires",
+    "error": "Une erreur est survenue. Veuillez réessayer.",
+    "stockIssues": "Problèmes de stock détectés",
+    "productNotFound": "Produit non trouvé",
+    "variantNotFound": "Variante non trouvée",
+    "insufficientStock": "Stock insuffisant",
+    "available": "Disponible"
+  },
+  "success": "Commande passée avec succès !"
+}

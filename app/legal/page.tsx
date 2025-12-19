@@ -1,13 +1,17 @@
+'use client';
+
 import Card from '@/components/ui/Card';
 import { Scale, Building2, Shield, FileText } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function LegalPage() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Mentions Légales</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('legal.title')}</h1>
             <p className="text-gray-600">
               Informations juridiques conformes à la législation algérienne
             </p>

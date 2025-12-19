@@ -1,13 +1,17 @@
+'use client';
+
 import Card from '@/components/ui/Card';
 import { Truck, Package, MapPin, Clock, CheckCircle, Shield } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ShippingPage() {
+  const { t } = useLanguage();
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="container mx-auto px-4">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-bold mb-4">Livraison et Expédition</h1>
+            <h1 className="text-4xl font-bold mb-4">{t('shipping.title')}</h1>
             <p className="text-gray-600 text-lg">
               Recevez vos articles dans les meilleures conditions
             </p>
@@ -18,7 +22,7 @@ export default function ShippingPage() {
             <div className="flex items-center gap-4 mb-4">
               <Truck size={48} />
               <div>
-                <h2 className="text-3xl font-bold">Livraison Rapide 48-72h</h2>
+                <h2 className="text-3xl font-bold">{t('shipping.hero.title')}</h2>
                 <p className="text-xl">Dans toute l'Algérie</p>
               </div>
             </div>

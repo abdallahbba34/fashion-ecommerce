@@ -33,10 +33,25 @@ export async function GET(request: NextRequest) {
       .skip((page - 1) * limit)
       .sort({ createdAt: -1 });
 
+    // Extract unique sizes and colors from variants if not already set
+    const productsWithMeta = products.map(product => {
+      const productObj = product.toObject();
+
+      if (!productObj.sizes || productObj.sizes.length === 0) {
+        productObj.sizes = [...new Set(productObj.variants.map((v: any) => v.size))];
+      }
+
+      if (!productObj.colors || productObj.colors.length === 0) {
+        productObj.colors = [...new Set(productObj.variants.map((v: any) => v.color))];
+      }
+
+      return productObj;
+    });
+
     const total = await ProductModel.countDocuments(query);
 
     return NextResponse.json({
-      products,
+      products: productsWithMeta,
       pagination: {
         page,
         limit,

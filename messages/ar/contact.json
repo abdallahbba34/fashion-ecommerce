@@ -1,0 +1,42 @@
+{
+  "title": "اتصل بنا",
+  "subtitle": "سؤال؟ اقتراح؟ لا تتردد في الاتصال بنا!",
+  "form": {
+    "title": "أرسل لنا رسالة",
+    "name": "الاسم الكامل",
+    "namePlaceholder": "اسمك",
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "your.email@example.com",
+    "phone": "الهاتف",
+    "phonePlaceholder": "0XXX XX XX XX",
+    "subject": "الموضوع",
+    "subjectPlaceholder": "موضوع رسالتك",
+    "message": "الرسالة",
+    "messagePlaceholder": "رسالتك...",
+    "sending": "جاري الإرسال...",
+    "send": "إرسال الرسالة",
+    "success": "تم إرسال الرسالة بنجاح! سنرد عليك في أقرب وقت ممكن."
+  },
+  "info": {
+    "title": "معلومات الاتصال",
+    "address": {
+      "label": "العنوان",
+      "line1": "برج بوعريريج",
+      "line2": "الجزائر"
+    },
+    "email": {
+      "label": "البريد الإلكتروني"
+    },
+    "phone": {
+      "label": "الهاتف",
+      "availability": "متاح 7 أيام/7 من 9 صباحاً إلى 8 مساءً"
+    }
+  },
+  "hours": {
+    "title": "ساعات العمل",
+    "weekdays": "الإثنين - السبت",
+    "weekdaysHours": "9 صباحاً - 8 مساءً",
+    "sunday": "الأحد",
+    "sundayHours": "10 صباحاً - 6 مساءً"
+  }
+}

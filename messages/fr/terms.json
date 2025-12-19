@@ -1,0 +1,85 @@
+{
+  "title": "Conditions Générales de Vente",
+  "lastUpdate": "Dernière mise à jour : Décembre 2025",
+  "guarantee": {
+    "title": "Garantie Satisfaction 48h",
+    "subtitle": "Votre satisfaction est notre priorité absolue",
+    "point1": "Retour possible dans les 48 heures",
+    "point1Detail": "en cas d'anomalie ou de non-satisfaction",
+    "point2": "Remboursement intégral ou échange sans frais supplémentaires",
+    "point3": "Produit retourné dans son emballage d'origine avec toutes les étiquettes"
+  },
+  "article1": {
+    "title": "1. Objet",
+    "p1": "Les présentes Conditions Générales de Vente (CGV) régissent les relations contractuelles entre La Suite Chic et ses clients dans le cadre de la vente en ligne de produits de mode.",
+    "p2": "Toute commande passée sur notre site implique l'acceptation sans réserve des présentes CGV."
+  },
+  "article2": {
+    "title": "2. Produits",
+    "p1": "Nos produits sont conformes à la législation algérienne en vigueur. Les photographies illustrant les produits n'ont pas de valeur contractuelle et peuvent différer légèrement de la réalité.",
+    "important": "Important :",
+    "importantText": "Nous nous efforçons de représenter fidèlement les couleurs et textures. Toutefois, les variations d'affichage peuvent entraîner des différences mineures."
+  },
+  "article3": {
+    "title": "3. Commandes",
+    "section1Title": "3.1 Processus de commande",
+    "section1Text": "Le client sélectionne les produits qu'il souhaite commander, vérifie sa commande et confirme celle-ci en fournissant les informations requises.",
+    "section2Title": "3.2 Confirmation",
+    "section2Text": "Une confirmation de commande est envoyée par email au client. Cette confirmation récapitule les produits commandés, le montant total et les informations de livraison.",
+    "section3Title": "3.3 Annulation",
+    "section3Text": "Le client peut annuler sa commande gratuitement tant que celle-ci n'a pas été expédiée."
+  },
+  "article4": {
+    "title": "4. Prix et Paiement",
+    "p1": "Tous les prix sont affichés en Dinars Algériens (DA) et comprennent toutes les taxes applicables.",
+    "paymentMethods": "Modes de paiement acceptés :",
+    "method1": "Paiement à la livraison (espèces)",
+    "method2": "Paiement sécurisé en ligne (si disponible)"
+  },
+  "article5": {
+    "title": "5. Livraison",
+    "p1": "Les livraisons sont effectuées dans toute l'Algérie dans un délai de 48 à 72 heures après confirmation de la commande.",
+    "freeShipping": "Livraison gratuite pour toute commande supérieure à 5000 DA"
+  },
+  "article6": {
+    "title": "6. Droit de Rétractation et Garantie",
+    "section1Title": "6.1 Délai de rétractation",
+    "section1Text": "Conformément à notre engagement qualité, vous disposez d'un délai de 48 heures à compter de la réception de votre commande pour exercer votre droit de rétractation.",
+    "section2Title": "6.2 Conditions de retour",
+    "condition1": "Le produit doit être retourné dans son état d'origine",
+    "condition2": "Emballage non endommagé et étiquettes intactes",
+    "condition3": "Le produit ne doit pas avoir été porté (sauf essayage)",
+    "section3Title": "6.3 Motifs de retour acceptés",
+    "reason1Title": "Anomalie ou défaut",
+    "reason1Text": "Produit défectueux ou endommagé",
+    "reason2Title": "Non-conformité",
+    "reason2Text": "Produit différent de la commande",
+    "reason3Title": "Insatisfaction",
+    "reason3Text": "Le produit ne correspond pas à vos attentes",
+    "section4Title": "6.4 Procédure de retour",
+    "step1": "Contactez notre service client dans les 48h suivant la réception",
+    "step2": "Indiquez le motif du retour et votre numéro de commande",
+    "step3": "Nous organisons la récupération du produit",
+    "step4": "Remboursement ou échange sous 7 jours ouvrables"
+  },
+  "article7": {
+    "title": "7. Responsabilité",
+    "text": "La Suite Chic s'engage à fournir des produits de qualité. Notre responsabilité ne saurait être engagée en cas de force majeure ou de fait indépendant de notre volonté."
+  },
+  "article8": {
+    "title": "8. Protection des Données",
+    "p1": "Les informations collectées lors de votre commande sont nécessaires au traitement de celle-ci et sont strictement confidentielles.",
+    "p2": "Conformément à la législation algérienne, vous disposez d'un droit d'accès et de rectification de vos données personnelles."
+  },
+  "article9": {
+    "title": "9. Litiges et Juridiction",
+    "p1": "Les présentes CGV sont soumises au droit algérien. En cas de litige, une solution amiable sera recherchée avant toute action judiciaire.",
+    "p2": "À défaut d'accord amiable, le litige sera porté devant les tribunaux compétents d'Algérie selon les règles de droit commun."
+  },
+  "contact": {
+    "title": "Questions ?",
+    "text": "Pour toute question concernant nos conditions générales de vente, n'hésitez pas à nous contacter :",
+    "email": "Email :",
+    "address": "Adresse : Bordj Bou Arreridj, Algérie"
+  }
+}

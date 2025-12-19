@@ -1,0 +1,71 @@
+{
+  "title": "Mentions Légales",
+  "subtitle": "Informations juridiques conformes à la législation algérienne",
+  "editor": {
+    "title": "Éditeur du Site",
+    "company": "Raison sociale :",
+    "companyValue": "La Suite Chic",
+    "form": "Forme juridique :",
+    "formValue": "Entreprise individuelle / SARL",
+    "address": "Siège social :",
+    "addressValue": "Bordj Bou Arreridj, Algérie",
+    "email": "Email :",
+    "phone": "Téléphone :",
+    "phoneValue": "Disponible 7j/7"
+  },
+  "hosting": {
+    "title": "Hébergement du Site",
+    "host": "Hébergeur :",
+    "hostValue": "Vercel Inc.",
+    "address": "Adresse :",
+    "addressValue": "340 S Lemon Ave #4133, Walnut, CA 91789, USA",
+    "website": "Site web :"
+  },
+  "intellectual": {
+    "title": "Propriété Intellectuelle",
+    "p1": "L'ensemble des éléments constituant le site web lasuitechic.online (structure, textes, graphismes, logo, images, vidéos, sons, bases de données, logiciels, etc.) sont la propriété exclusive de La Suite Chic.",
+    "p2": "Toute reproduction, représentation, modification, publication ou adaptation de tout ou partie des éléments du site, quel que soit le moyen ou le procédé utilisé, est interdite sans l'autorisation écrite préalable de La Suite Chic.",
+    "p3": "Toute exploitation non autorisée du site ou de l'un quelconque des éléments qu'il contient sera considérée comme constitutive d'une contrefaçon et poursuivie conformément aux dispositions du Code pénal algérien."
+  },
+  "data": {
+    "title": "Protection des Données Personnelles",
+    "collection": {
+      "title": "Collecte des données",
+      "text": "Conformément à la législation algérienne en matière de protection des données personnelles, nous nous engageons à respecter la confidentialité des informations personnelles collectées sur notre site."
+    },
+    "usage": {
+      "title": "Utilisation des données",
+      "text": "Les données personnelles collectées sont utilisées exclusivement pour :"
+    },
+    "usageItems": {
+      "item1": "Le traitement et le suivi de vos commandes",
+      "item2": "La communication concernant nos produits et services",
+      "item3": "L'amélioration de notre service client",
+      "item4": "Le respect de nos obligations légales"
+    },
+    "rights": {
+      "title": "Vos droits",
+      "text": "Vous disposez d'un droit d'accès, de rectification et de suppression de vos données personnelles. Pour exercer ces droits, contactez-nous à :"
+    }
+  },
+  "cookies": {
+    "title": "Cookies",
+    "p1": "Notre site utilise des cookies pour améliorer votre expérience de navigation et analyser l'utilisation du site.",
+    "p2": "Les cookies sont de petits fichiers texte stockés sur votre appareil. Vous pouvez configurer votre navigateur pour refuser les cookies, mais certaines fonctionnalités du site pourraient être limitées."
+  },
+  "liability": {
+    "title": "Responsabilité",
+    "p1": "La Suite Chic s'efforce d'assurer l'exactitude et la mise à jour des informations diffusées sur ce site. Toutefois, nous ne pouvons garantir l'exactitude, la précision ou l'exhaustivité des informations mises à disposition.",
+    "p2": "La Suite Chic ne saurait être tenue responsable des dommages directs ou indirects résultant de l'utilisation de ce site ou de sites tiers accessibles via des liens hypertextes."
+  },
+  "law": {
+    "title": "Droit Applicable",
+    "text": "Les présentes mentions légales sont régies par le droit algérien. Tout litige relatif à l'utilisation de ce site sera soumis à la compétence exclusive des tribunaux algériens."
+  },
+  "contact": {
+    "title": "Nous Contacter",
+    "text": "Pour toute question concernant ces mentions légales, vous pouvez nous contacter :",
+    "email": "Par email :",
+    "address": "Par courrier :"
+  }
+}

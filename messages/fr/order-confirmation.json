@@ -1,0 +1,13 @@
+{
+  "title": "Commande confirmée !",
+  "thankYou": "Merci pour votre commande. Nous avons bien reçu votre demande et nous vous contacterons bientôt pour confirmer les détails de livraison.",
+  "nextSteps": {
+    "title": "Prochaines étapes",
+    "step1": "1. Notre équipe vérifie votre commande",
+    "step2": "2. Nous vous contacterons par téléphone pour confirmation",
+    "step3": "3. Votre commande sera préparée et expédiée",
+    "step4": "4. Vous recevrez votre colis sous 48-72h"
+  },
+  "continueShopping": "Continuer mes achats",
+  "trackOrder": "Suivre ma commande"
+}

@@ -7,8 +7,10 @@ import Button from '@/components/ui/Button';
 import ProductCard from '@/components/ProductCard';
 import { ProductGridSkeleton } from '@/components/ui/Skeleton';
 import { ArrowRight, TruckIcon, ShieldCheck, HeadphonesIcon, Sparkles, TrendingUp, Tag, Star } from 'lucide-react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function HomePage() {
+  const { t } = useLanguage();
   const [allProducts, setAllProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -63,17 +65,17 @@ export default function HomePage() {
   }, [allProducts, loading]);
   const featuredCategories = [
     {
-      name: 'Nouveautés Femmes',
+      name: t('categories.women'),
       image: '/images/women-collection.jpg',
       href: '/products?category=femmes&filter=new',
     },
     {
-      name: 'Collection Enfants',
+      name: t('categories.kids'),
       image: '/images/men-collection.jpg',
       href: '/products?category=enfants',
     },
     {
-      name: 'Accessoires',
+      name: t('categories.accessories'),
       image: '/images/accessories.jpg',
       href: '/products?category=accessoires',
     },
@@ -82,18 +84,18 @@ export default function HomePage() {
   const features = [
     {
       icon: TruckIcon,
-      title: 'Livraison Rapide',
-      description: 'Livraison dans toute l\'Algérie sous 48-72h',
+      title: t('features.shipping.title'),
+      description: t('features.shipping.description'),
     },
     {
       icon: ShieldCheck,
-      title: 'Paiement Sécurisé',
-      description: 'Paiement à la livraison disponible',
+      title: t('features.payment.title'),
+      description: t('features.payment.description'),
     },
     {
       icon: HeadphonesIcon,
-      title: 'Service Client',
-      description: 'Disponible 7j/7 pour vous assister',
+      title: t('features.support.title'),
+      description: t('features.support.description'),
     },
   ];
 
@@ -106,13 +108,12 @@ export default function HomePage() {
             {/* Texte à gauche */}
             <div className="flex-1">
               <h1 className="text-3xl md:text-5xl font-bold mb-4 animate-fade-in">
-                Nouvelle Collection
+                {t('hero.title')}
                 <br />
-                Printemps/Été 2025
+                {t('hero.subtitle')}
               </h1>
               <p className="text-base md:text-lg text-gray-300 animate-slide-up">
-                Découvrez les dernières tendances mode avec des pièces uniques
-                et élégantes pour toutes les occasions.
+                {t('hero.description')}
               </p>
             </div>
 
@@ -120,13 +121,13 @@ export default function HomePage() {
             <div className="flex flex-col sm:flex-row gap-4 md:flex-shrink-0">
               <Link href="/products?filter=new">
                 <Button size="lg" className="w-full sm:w-auto whitespace-nowrap">
-                  Découvrir
+                  {t('hero.discover')}
                   <ArrowRight className="ml-2" size={20} />
                 </Button>
               </Link>
               <Link href="/products?filter=sale">
                 <Button variant="outline" size="lg" className="w-full sm:w-auto bg-white whitespace-nowrap">
-                  Voir les Soldes
+                  {t('hero.sales')}
                 </Button>
               </Link>
             </div>
@@ -140,10 +141,10 @@ export default function HomePage() {
           <div className="text-center mb-12">
             <div className="flex items-center justify-center gap-3 mb-3">
               <Star className="text-yellow-500" size={32} fill="currentColor" />
-              <h2 className="text-4xl font-bold">Vitrine de la Boutique</h2>
+              <h2 className="text-4xl font-bold">{t('shopWindow.title')}</h2>
               <Star className="text-yellow-500" size={32} fill="currentColor" />
             </div>
-            <p className="text-gray-600 text-lg">Découvrez notre sélection de produits phares</p>
+            <p className="text-gray-600 text-lg">{t('shopWindow.description')}</p>
           </div>
 
           {loading ? (
@@ -162,9 +163,9 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="text-center py-12">
-              <p className="text-gray-500 text-lg mb-4">Aucun produit disponible pour le moment</p>
+              <p className="text-gray-500 text-lg mb-4">{t('shopWindow.noProducts')}</p>
               <Link href="/products">
-                <Button>Explorer tous les produits</Button>
+                <Button>{t('shopWindow.exploreAll')}</Button>
               </Link>
             </div>
           )}
@@ -173,7 +174,7 @@ export default function HomePage() {
             <div className="text-center mt-8">
               <Link href="/products">
                 <Button size="lg" className="gap-2">
-                  Voir tous les produits ({allProducts.length})
+                  {t('shopWindow.viewAll')} ({allProducts.length})
                   <ArrowRight size={20} />
                 </Button>
               </Link>
@@ -185,7 +186,7 @@ export default function HomePage() {
       {/* Featured Categories */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Catégories Populaires</h2>
+          <h2 className="text-3xl font-bold text-center mb-12">{t('categories.title')}</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {featuredCategories.map((category) => (
               <Link
@@ -199,7 +200,7 @@ export default function HomePage() {
                     {category.name}
                   </h3>
                   <span className="text-white underline group-hover:translate-x-2 transition-transform inline-block">
-                    Explorer
+                    {t('categories.explore')}
                   </span>
                 </div>
                 {/* Placeholder for image - replace with actual images */}
@@ -234,13 +235,13 @@ export default function HomePage() {
             <div className="animate-slideInLeft">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="text-yellow-500" size={24} />
-                <h2 className="text-3xl font-bold">Nouveautés</h2>
+                <h2 className="text-3xl font-bold">{t('newArrivals.title')}</h2>
               </div>
-              <p className="text-gray-600">Découvrez nos dernières arrivées</p>
+              <p className="text-gray-600">{t('newArrivals.description')}</p>
             </div>
             <Link href="/products?filter=new" className="animate-slideInRight">
               <Button variant="outline" className="gap-2">
-                Voir tout <ArrowRight size={16} />
+                {t('newArrivals.viewAll')} <ArrowRight size={16} />
               </Button>
             </Link>
           </div>
@@ -261,7 +262,7 @@ export default function HomePage() {
             </div>
           ) : (
             <div className="text-center py-12 text-gray-500">
-              Aucune nouveauté pour le moment
+              {t('newArrivals.noProducts')}
             </div>
           )}
         </div>
@@ -275,13 +276,13 @@ export default function HomePage() {
               <div className="animate-slideInLeft">
                 <div className="flex items-center gap-2 mb-2">
                   <TrendingUp className="text-blue-500" size={24} />
-                  <h2 className="text-3xl font-bold">Produits Vedettes</h2>
+                  <h2 className="text-3xl font-bold">{t('featured.title')}</h2>
                 </div>
-                <p className="text-gray-600">Nos meilleures ventes du moment</p>
+                <p className="text-gray-600">{t('featured.description')}</p>
               </div>
               <Link href="/products" className="animate-slideInRight">
                 <Button variant="outline" className="gap-2">
-                  Tout parcourir <ArrowRight size={16} />
+                  {t('featured.browse')} <ArrowRight size={16} />
                 </Button>
               </Link>
             </div>
@@ -310,13 +311,13 @@ export default function HomePage() {
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-3xl mx-auto animate-scaleIn">
             <Tag size={48} className="mx-auto mb-4 animate-bounce-gentle" />
-            <h2 className="text-4xl font-bold mb-4">Offres Spéciales</h2>
+            <h2 className="text-4xl font-bold mb-4">{t('promo.title')}</h2>
             <p className="text-xl mb-8 text-white/90">
-              Jusqu'à -30% sur une sélection de produits
+              {t('promo.description')}
             </p>
             <Link href="/products?filter=sale">
               <Button size="lg" className="bg-white text-purple-600 hover:bg-gray-100 font-bold">
-                Profiter des soldes
+                {t('promo.cta')}
               </Button>
             </Link>
           </div>
@@ -326,19 +327,18 @@ export default function HomePage() {
       {/* CTA Section */}
       <section className="py-16 bg-black text-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Rejoignez Notre Newsletter</h2>
+          <h2 className="text-3xl font-bold mb-4">{t('newsletter.title')}</h2>
           <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
-            Inscrivez-vous pour recevoir les dernières tendances, offres exclusives
-            et réductions spéciales directement dans votre boîte mail.
+            {t('newsletter.description')}
           </p>
           <div className="max-w-md mx-auto flex gap-4">
             <input
               type="email"
-              placeholder="Votre adresse email"
+              placeholder={t('newsletter.placeholder')}
               className="flex-1 px-4 py-3 rounded-lg text-black"
             />
             <Button variant="outline" className="bg-white text-black hover:bg-gray-100">
-              S'inscrire
+              {t('newsletter.subscribe')}
             </Button>
           </div>
         </div>

@@ -1,0 +1,24 @@
+{
+  "loading": "جاري التحميل...",
+  "notFound": "المنتج غير موجود",
+  "selectSizeColor": "يرجى اختيار المقاس واللون",
+  "insufficientStock": "المخزون غير كافٍ",
+  "available": "متاح",
+  "inCart": "في السلة",
+  "addedToCart": "تمت إضافة المنتج إلى السلة",
+  "new": "جديد",
+  "noImage": "لا توجد صورة",
+  "color": "اللون",
+  "size": "المقاس",
+  "allSizes": "الكل",
+  "quantity": "الكمية",
+  "inStock": "متوفر",
+  "addToCart": "أضف إلى السلة",
+  "freeShipping": {
+    "title": "توصيل مجاني",
+    "description": "للطلبات التي تزيد عن 5000 دج. التوصيل خلال 48-72 ساعة."
+  },
+  "description": "الوصف",
+  "material": "المادة",
+  "care": "العناية"
+}

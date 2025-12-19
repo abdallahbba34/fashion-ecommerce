@@ -1,13 +1,17 @@
+'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/types';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const { t } = useLanguage();
   const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.price;
   const discountPercent = hasDiscount
     ? Math.round(((product.compareAtPrice! - product.price) / product.compareAtPrice!) * 100)
@@ -20,7 +24,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 animate-slideInLeft">
           {product.newArrival && (
             <span className="bg-black text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
-              ✨ Nouveau
+              ✨ {t('products.card.new')}
             </span>
           )}
           {hasDiscount && (
@@ -30,7 +34,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
           {product.bestseller && !product.newArrival && (
             <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
-              ⭐ Best
+              ⭐ {t('products.card.best')}
             </span>
           )}
         </div>
@@ -47,14 +51,14 @@ export default function ProductCard({ product }: ProductCardProps) {
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
-            <span className="text-gray-400 text-sm">Pas d'image</span>
+            <span className="text-gray-400 text-sm">{t('products.card.noImage')}</span>
           </div>
         )}
 
         {/* Gradient Overlay on Hover */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
           <span className="text-white text-sm font-semibold px-6 py-2 border-2 border-white rounded-full backdrop-blur-sm bg-white/10 hover-scale">
-            Voir Plus →
+            {t('products.card.viewMore')}
           </span>
         </div>
       </div>
@@ -82,7 +86,7 @@ export default function ProductCard({ product }: ProductCardProps) {
         {hasDiscount && (
           <div className="mb-2">
             <span className="inline-block text-xs font-semibold text-green-700 bg-green-50 px-2 py-1 rounded">
-              Économisez {formatPrice(product.compareAtPrice! - product.price)}
+              {t('products.card.save')} {formatPrice(product.compareAtPrice! - product.price)}
             </span>
           </div>
         )}
@@ -109,9 +113,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         {product.variants && product.variants.length > 0 && (
           <div className="mt-2">
             {product.variants.some((v: any) => v.stock > 0) ? (
-              <span className="text-xs text-green-600 font-medium">✓ En stock</span>
+              <span className="text-xs text-green-600 font-medium">✓ {t('products.card.inStock')}</span>
             ) : (
-              <span className="text-xs text-red-600 font-medium">Rupture de stock</span>
+              <span className="text-xs text-red-600 font-medium">{t('products.card.outOfStock')}</span>
             )}
           </div>
         )}

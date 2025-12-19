@@ -1,0 +1,59 @@
+{
+  "hero": {
+    "title": "Nouvelle Collection",
+    "subtitle": "Printemps/Été 2025",
+    "description": "Découvrez les dernières tendances mode avec des pièces uniques et élégantes pour toutes les occasions.",
+    "discover": "Découvrir",
+    "sales": "Voir les Soldes"
+  },
+  "shopWindow": {
+    "title": "Vitrine de la Boutique",
+    "description": "Découvrez notre sélection de produits phares",
+    "noProducts": "Aucun produit disponible pour le moment",
+    "exploreAll": "Explorer tous les produits",
+    "viewAll": "Voir tous les produits"
+  },
+  "categories": {
+    "title": "Catégories Populaires",
+    "women": "Nouveautés Femmes",
+    "kids": "Collection Enfants",
+    "accessories": "Accessoires",
+    "explore": "Explorer"
+  },
+  "features": {
+    "shipping": {
+      "title": "Livraison Rapide",
+      "description": "Livraison dans toute l'Algérie sous 48-72h"
+    },
+    "payment": {
+      "title": "Paiement Sécurisé",
+      "description": "Paiement à la livraison disponible"
+    },
+    "support": {
+      "title": "Service Client",
+      "description": "Disponible 7j/7 pour vous assister"
+    }
+  },
+  "newArrivals": {
+    "title": "Nouveautés",
+    "description": "Découvrez nos dernières arrivées",
+    "viewAll": "Voir tout",
+    "noProducts": "Aucune nouveauté pour le moment"
+  },
+  "featured": {
+    "title": "Produits Vedettes",
+    "description": "Nos meilleures ventes du moment",
+    "browse": "Tout parcourir"
+  },
+  "promo": {
+    "title": "Offres Spéciales",
+    "description": "Jusqu'à -30% sur une sélection de produits",
+    "cta": "Profiter des soldes"
+  },
+  "newsletter": {
+    "title": "Rejoignez Notre Newsletter",
+    "description": "Inscrivez-vous pour recevoir les dernières tendances, offres exclusives et réductions spéciales directement dans votre boîte mail.",
+    "placeholder": "Votre adresse email",
+    "subscribe": "S'inscrire"
+  }
+}

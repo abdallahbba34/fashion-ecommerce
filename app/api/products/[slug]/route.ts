@@ -19,7 +19,18 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(product);
+    // Extract unique sizes and colors from variants if not already set
+    const productObj = product.toObject();
+
+    if (!productObj.sizes || productObj.sizes.length === 0) {
+      productObj.sizes = [...new Set(productObj.variants.map((v: any) => v.size))];
+    }
+
+    if (!productObj.colors || productObj.colors.length === 0) {
+      productObj.colors = [...new Set(productObj.variants.map((v: any) => v.color))];
+    }
+
+    return NextResponse.json(productObj);
   } catch (error) {
     console.error('Error fetching product:', error);
     return NextResponse.json(

@@ -1,0 +1,24 @@
+{
+  "loading": "Chargement...",
+  "notFound": "Produit non trouvé",
+  "selectSizeColor": "Veuillez sélectionner une taille et une couleur",
+  "insufficientStock": "Stock insuffisant",
+  "available": "Disponible",
+  "inCart": "Dans le panier",
+  "addedToCart": "Produit ajouté au panier",
+  "new": "Nouveau",
+  "noImage": "Pas d'image",
+  "color": "Couleur",
+  "size": "Taille",
+  "allSizes": "Toute",
+  "quantity": "Quantité",
+  "inStock": "en stock",
+  "addToCart": "Ajouter au Panier",
+  "freeShipping": {
+    "title": "Livraison Gratuite",
+    "description": "Pour les commandes supérieures à 5000 DA. Livraison sous 48-72h."
+  },
+  "description": "Description",
+  "material": "Matière",
+  "care": "Entretien"
+}

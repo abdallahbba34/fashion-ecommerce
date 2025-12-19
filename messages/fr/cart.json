@@ -1,0 +1,20 @@
+{
+  "title": "Panier",
+  "empty": {
+    "title": "Votre panier est vide",
+    "description": "Découvrez nos produits et ajoutez-les à votre panier",
+    "continue": "Continuer mes achats"
+  },
+  "size": "Taille",
+  "color": "Couleur",
+  "stockLimit": "Stock maximum disponible",
+  "continueShopping": "Continuer mes achats",
+  "summary": {
+    "title": "Récapitulatif",
+    "subtotal": "Sous-total",
+    "shipping": "Livraison",
+    "total": "Total",
+    "checkout": "Passer la commande",
+    "securePayment": "Paiement sécurisé à la livraison"
+  }
+}

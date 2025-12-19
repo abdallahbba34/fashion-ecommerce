@@ -3,25 +3,28 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/store/cart';
+import { useLanguage } from '@/contexts/LanguageContext';
 import { ShoppingBag, Search, Menu, X, User } from 'lucide-react';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function ClientHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const itemCount = useCart((state) => state.getItemCount());
+  const { t } = useLanguage();
 
   const categories = [
-    { name: 'Nouveautés', href: '/products?filter=new' },
-    { name: 'Femmes', href: '/products?category=femmes' },
-    { name: 'Enfants', href: '/products?category=enfants' },
-    { name: 'Accessoires', href: '/products?category=accessoires' },
-    { name: 'Soldes', href: '/products?filter=sale' },
+    { name: t('nav.nouveautes'), href: '/products?filter=new' },
+    { name: t('nav.femmes'), href: '/products?category=femmes' },
+    { name: t('nav.enfants'), href: '/products?category=enfants' },
+    { name: t('nav.accessoires'), href: '/products?category=accessoires' },
+    { name: t('nav.soldes'), href: '/products?filter=sale' },
   ];
 
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
       {/* Top Banner */}
       <div className="bg-black text-white text-center py-2 text-sm">
-        Livraison gratuite pour toute commande supérieure à 5000 DA
+        {t('banner')}
       </div>
 
       {/* Main Header */}
@@ -58,6 +61,7 @@ export default function ClientHeader() {
             <button className="p-2 hover:bg-gray-100 rounded-lg">
               <Search size={20} />
             </button>
+            <LanguageSwitcher />
             <Link href="/account" className="p-2 hover:bg-gray-100 rounded-lg">
               <User size={20} />
             </Link>

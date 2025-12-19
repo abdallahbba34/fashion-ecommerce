@@ -1,0 +1,90 @@
+{
+  "title": "Retours et Échanges",
+  "subtitle": "Votre satisfaction est notre priorité",
+  "guarantee": {
+    "title": "Garantie Satisfaction 48h",
+    "subtitle": "Retour gratuit en cas de problème",
+    "description": "Si vous n'êtes pas satisfait de votre achat, vous pouvez retourner votre produit dans les 48 heures suivant la réception."
+  },
+  "conditions": {
+    "title": "Conditions de Retour",
+    "delay": {
+      "title": "Délai de 48 heures",
+      "description": "Vous disposez de 48 heures à compter de la réception pour nous contacter et initier un retour."
+    },
+    "state": {
+      "title": "Produit en parfait état",
+      "description": "Le produit doit être retourné dans son état d'origine, non porté (essayage uniquement) et avec toutes ses étiquettes."
+    },
+    "packaging": {
+      "title": "Emballage d'origine",
+      "description": "Le produit doit être retourné dans son emballage d'origine, non endommagé."
+    },
+    "proof": {
+      "title": "Preuve d'achat",
+      "description": "Conservez votre confirmation de commande ou votre facture."
+    }
+  },
+  "reasons": {
+    "title": "Motifs de Retour Acceptés",
+    "defect": {
+      "title": "Défaut ou Anomalie",
+      "description": "Le produit présente un défaut de fabrication ou est endommagé"
+    },
+    "nonconformity": {
+      "title": "Non-conformité",
+      "description": "Le produit reçu ne correspond pas à la description ou à la commande"
+    },
+    "dissatisfaction": {
+      "title": "Insatisfaction",
+      "description": "Le produit ne vous convient pas (taille, style, etc.)"
+    }
+  },
+  "process": {
+    "title": "Comment Retourner un Produit ?",
+    "step1": {
+      "number": "1",
+      "title": "Contactez-nous",
+      "description": "Envoyez un email à contact@lasuitechic.online dans les 48h suivant la réception en indiquant votre numéro de commande et le motif du retour."
+    },
+    "step2": {
+      "number": "2",
+      "title": "Confirmation",
+      "description": "Notre équipe vous contactera pour confirmer votre demande de retour et organiser la récupération."
+    },
+    "step3": {
+      "number": "3",
+      "title": "Récupération",
+      "description": "Nous organisons la récupération du produit à votre domicile. Préparez le colis avec l'emballage d'origine."
+    },
+    "step4": {
+      "number": "4",
+      "title": "Remboursement",
+      "description": "Après réception et vérification, vous serez remboursé sous 7 jours ouvrables ou recevrez un produit de remplacement."
+    }
+  },
+  "refund": {
+    "title": "Modalités de Remboursement",
+    "p1": "Le remboursement sera effectué selon le mode de paiement initial utilisé lors de la commande.",
+    "p2": "Un échange contre un autre produit est également possible si vous préférez.",
+    "p3": "Les frais de livraison initiaux ne sont pas remboursés sauf en cas de défaut ou d'erreur de notre part.",
+    "note": "Note :",
+    "noteText": "En cas de défaut ou d'anomalie constatée, tous les frais (produit + livraison) vous seront intégralement remboursés."
+  },
+  "exclusions": {
+    "title": "Produits Non Retournables",
+    "intro": "Pour des raisons d'hygiène et de sécurité, certains articles ne peuvent pas être retournés :",
+    "item1": "Sous-vêtements et articles d'hygiène personnelle descellés",
+    "item2": "Produits sur mesure ou personnalisés",
+    "item3": "Articles soldés en promotion finale (sauf défaut)",
+    "item4": "Produits endommagés ou altérés après livraison"
+  },
+  "contact": {
+    "title": "Besoin d'aide pour un retour ?",
+    "description": "Notre équipe est là pour vous aider. Contactez-nous pour toute question sur les retours.",
+    "email": "Email :",
+    "phone": "Téléphone :",
+    "phoneValue": "Disponible 7j/7",
+    "responseTime": "Temps de réponse : Sous 24h maximum"
+  }
+}

@@ -8,6 +8,7 @@ import Button from '@/components/ui/Button';
 import { ShoppingBag, Heart, Share2, TruckIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 interface Product {
   _id: string;
@@ -29,9 +30,11 @@ interface Product {
 }
 
 export default function ProductDetailPage() {
+  const { t } = useLanguage();
   const params = useParams();
   const router = useRouter();
   const addItem = useCart((state) => state.addItem);
+  const cartItems = useCart((state) => state.items);
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -46,13 +49,13 @@ export default function ProductDetailPage() {
       try {
         const response = await fetch(`/api/products/${params.slug}`);
         if (!response.ok) {
-          throw new Error('Produit non trouvé');
+          throw new Error(t('productDetail.notFound'));
         }
         const data = await response.json();
         setProduct(data);
       } catch (error) {
         console.error('Error loading product:', error);
-        toast.error('Produit non trouvé');
+        toast.error(t('productDetail.notFound'));
         router.push('/products');
       } finally {
         setLoading(false);
@@ -67,7 +70,7 @@ export default function ProductDetailPage() {
   if (loading) {
     return (
       <div className="container mx-auto px-4 py-8">
-        <div className="text-center">Chargement...</div>
+        <div className="text-center">{t('productDetail.loading')}</div>
       </div>
     );
   }
@@ -82,12 +85,30 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
-      toast.error('Veuillez sélectionner une taille et une couleur');
+      toast.error(t('productDetail.selectSizeColor'));
       return;
     }
 
-    if (!selectedVariant || selectedVariant.stock < quantity) {
-      toast.error('Stock insuffisant');
+    if (!selectedVariant) {
+      toast.error(t('productDetail.insufficientStock'));
+      return;
+    }
+
+    // Check quantity already in cart for this variant
+    const cartItem = cartItems.find(
+      (item) =>
+        item.productId === product._id &&
+        item.size === selectedSize &&
+        item.color === selectedColor
+    );
+    const quantityInCart = cartItem ? cartItem.quantity : 0;
+    const totalQuantity = quantityInCart + quantity;
+
+    // Check if total quantity exceeds stock
+    if (totalQuantity > selectedVariant.stock) {
+      toast.error(
+        `${t('productDetail.insufficientStock')} (${t('productDetail.available')}: ${selectedVariant.stock}, ${t('productDetail.inCart')}: ${quantityInCart})`
+      );
       return;
     }
 
@@ -101,7 +122,7 @@ export default function ProductDetailPage() {
       quantity,
     });
 
-    toast.success('Produit ajouté au panier');
+    toast.success(t('productDetail.addedToCart'));
   };
 
   const hasDiscount = product.compareAtPrice && product.compareAtPrice > product.price;
@@ -127,7 +148,7 @@ export default function ProductDetailPage() {
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
-                <span className="text-gray-400">Pas d'image</span>
+                <span className="text-gray-400">{t('productDetail.noImage')}</span>
               </div>
             )}
           </div>
@@ -161,7 +182,7 @@ export default function ProductDetailPage() {
           <div className="mb-6">
             {product.newArrival && (
               <span className="inline-block bg-black text-white text-xs px-2 py-1 rounded mb-2">
-                Nouveau
+                {t('productDetail.new')}
               </span>
             )}
             <h1 className="text-3xl font-bold mb-2">{product.name}</h1>
@@ -181,7 +202,7 @@ export default function ProductDetailPage() {
           {/* Color Selection */}
           <div className="mb-6">
             <label className="block font-medium mb-3">
-              Couleur: {selectedColor && <span className="font-normal text-gray-600">{selectedColor}</span>}
+              {t('productDetail.color')}: {selectedColor && <span className="font-normal text-gray-600">{selectedColor}</span>}
             </label>
             <div className="flex gap-2">
               {product.colors.map((color) => (
@@ -202,21 +223,21 @@ export default function ProductDetailPage() {
           {/* Size Selection */}
           <div className="mb-6">
             <label className="block font-medium mb-3">
-              Taille: {selectedSize && <span className="font-normal text-gray-600">{selectedSize}</span>}
+              {t('productDetail.size')}: {selectedSize && <span className="font-normal text-gray-600">{selectedSize}</span>}
             </label>
             <div className="flex flex-wrap gap-2">
               {/* Option Toute */}
               <button
-                onClick={() => setSelectedSize('Toute')}
+                onClick={() => setSelectedSize(t('productDetail.allSizes'))}
                 className={`
                   px-6 py-3 rounded-lg border-2 font-medium transition-all
-                  ${selectedSize === 'Toute'
+                  ${selectedSize === t('productDetail.allSizes')
                     ? 'bg-black text-white border-black'
                     : 'bg-white text-gray-900 border-gray-300 hover:border-black'
                   }
                 `}
               >
-                Toute
+                {t('productDetail.allSizes')}
               </button>
               {/* Tailles du produit */}
               {product.sizes.map((size) => (
@@ -239,7 +260,7 @@ export default function ProductDetailPage() {
 
           {/* Quantity */}
           <div className="mb-6">
-            <label className="block font-medium mb-3">Quantité</label>
+            <label className="block font-medium mb-3">{t('productDetail.quantity')}</label>
             <div className="flex items-center gap-4">
               <div className="flex items-center border rounded-lg">
                 <button
@@ -258,7 +279,7 @@ export default function ProductDetailPage() {
               </div>
               {selectedVariant && (
                 <span className="text-sm text-gray-600">
-                  {selectedVariant.stock} en stock
+                  {selectedVariant.stock} {t('productDetail.inStock')}
                 </span>
               )}
             </div>
@@ -272,7 +293,7 @@ export default function ProductDetailPage() {
               className="flex-1"
             >
               <ShoppingBag className="mr-2" size={20} />
-              Ajouter au Panier
+              {t('productDetail.addToCart')}
             </Button>
             <button className="p-3 border rounded-lg hover:bg-gray-100">
               <Heart size={24} />
@@ -287,9 +308,9 @@ export default function ProductDetailPage() {
             <div className="flex items-start gap-3">
               <TruckIcon size={24} className="text-gray-600 mt-1" />
               <div>
-                <h3 className="font-medium mb-1">Livraison Gratuite</h3>
+                <h3 className="font-medium mb-1">{t('productDetail.freeShipping.title')}</h3>
                 <p className="text-sm text-gray-600">
-                  Pour les commandes supérieures à 5000 DA. Livraison sous 48-72h.
+                  {t('productDetail.freeShipping.description')}
                 </p>
               </div>
             </div>
@@ -297,16 +318,16 @@ export default function ProductDetailPage() {
 
           {/* Description */}
           <div className="border-t pt-6">
-            <h2 className="font-semibold text-lg mb-3">Description</h2>
+            <h2 className="font-semibold text-lg mb-3">{t('productDetail.description')}</h2>
             <p className="text-gray-600 leading-relaxed mb-4">{product.description}</p>
 
             <div className="grid grid-cols-2 gap-4 text-sm">
               <div>
-                <span className="font-medium">Matière:</span>
+                <span className="font-medium">{t('productDetail.material')}:</span>
                 <span className="text-gray-600 ml-2">{product.material}</span>
               </div>
               <div>
-                <span className="font-medium">Entretien:</span>
+                <span className="font-medium">{t('productDetail.care')}:</span>
                 <span className="text-gray-600 ml-2">{product.care}</span>
               </div>
             </div>

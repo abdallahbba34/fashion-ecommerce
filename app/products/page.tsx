@@ -6,8 +6,10 @@ import ProductCard from '@/components/ProductCard';
 import { ProductGridSkeleton } from '@/components/ui/Skeleton';
 import { Filter, X } from 'lucide-react';
 import Button from '@/components/ui/Button';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function ProductsPage() {
+  const { t } = useLanguage();
   const searchParams = useSearchParams();
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('tous');
@@ -95,14 +97,19 @@ export default function ProductsPage() {
     return 0;
   });
 
-  const categories = ['Tous', 'Femmes', 'Enfants', 'Accessoires'];
+  const categories = [
+    { label: t('products.category.all'), value: 'tous' },
+    { label: t('products.category.femmes'), value: 'femmes' },
+    { label: t('products.category.enfants'), value: 'enfants' },
+    { label: t('products.category.accessoires'), value: 'accessoires' },
+  ];
   const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
   const priceRanges = [
-    { label: 'Tous les prix', value: 'all' },
-    { label: 'Moins de 3000 DA', value: '0-3000' },
-    { label: '3000 - 5000 DA', value: '3000-5000' },
-    { label: '5000 - 10000 DA', value: '5000-10000' },
-    { label: 'Plus de 10000 DA', value: '10000+' },
+    { label: t('products.price.all'), value: 'all' },
+    { label: t('products.price.under3000'), value: '0-3000' },
+    { label: t('products.price.range3000'), value: '3000-5000' },
+    { label: t('products.price.range5000'), value: '5000-10000' },
+    { label: t('products.price.over10000'), value: '10000+' },
   ];
 
   return (
@@ -110,9 +117,9 @@ export default function ProductsPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-bold mb-2">Nos Produits</h1>
+          <h1 className="text-3xl font-bold mb-2">{t('products.title')}</h1>
           <p className="text-gray-600">
-            {loading ? 'Chargement...' : `${filteredProducts.length} produits disponibles`}
+            {loading ? t('products.loading') : `${filteredProducts.length} ${t('products.productsAvailable')}`}
           </p>
         </div>
 
@@ -122,7 +129,7 @@ export default function ProductsPage() {
           className="lg:hidden flex items-center gap-2 px-4 py-2 border rounded-lg"
         >
           <Filter size={20} />
-          Filtres
+          {t('products.filters')}
         </button>
       </div>
 
@@ -140,7 +147,7 @@ export default function ProductsPage() {
           <div className="lg:sticky lg:top-4">
             {/* Mobile Close Button */}
             <div className="lg:hidden flex items-center justify-between mb-4">
-              <h2 className="text-xl font-semibold">Filtres</h2>
+              <h2 className="text-xl font-semibold">{t('products.filters')}</h2>
               <button onClick={() => setShowFilters(false)}>
                 <X size={24} />
               </button>
@@ -148,19 +155,19 @@ export default function ProductsPage() {
 
             {/* Category Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Catégorie</h3>
+              <h3 className="font-semibold mb-3">{t('products.category.title')}</h3>
               <div className="space-y-2">
                 {categories.map((category) => (
-                  <label key={category} className="flex items-center gap-2 cursor-pointer">
+                  <label key={category.value} className="flex items-center gap-2 cursor-pointer">
                     <input
                       type="radio"
                       name="category"
-                      value={category.toLowerCase()}
-                      checked={selectedCategory === category.toLowerCase()}
+                      value={category.value}
+                      checked={selectedCategory === category.value}
                       onChange={(e) => setSelectedCategory(e.target.value)}
                       className="w-4 h-4"
                     />
-                    <span className="text-sm">{category}</span>
+                    <span className="text-sm">{category.label}</span>
                   </label>
                 ))}
               </div>
@@ -168,7 +175,7 @@ export default function ProductsPage() {
 
             {/* Size Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Taille</h3>
+              <h3 className="font-semibold mb-3">{t('products.size.title')}</h3>
               <div className="grid grid-cols-3 gap-2">
                 {/* Bouton Toutes les tailles */}
                 <button
@@ -181,7 +188,7 @@ export default function ProductsPage() {
                     }
                   `}
                 >
-                  Toutes les tailles
+                  {t('products.size.allSizes')}
                 </button>
                 {sizes.map((size) => (
                   <button
@@ -203,7 +210,7 @@ export default function ProductsPage() {
 
             {/* Price Filter */}
             <div className="mb-6">
-              <h3 className="font-semibold mb-3">Prix</h3>
+              <h3 className="font-semibold mb-3">{t('products.price.title')}</h3>
               <div className="space-y-2">
                 {priceRanges.map((range) => (
                   <label key={range.value} className="flex items-center gap-2 cursor-pointer">
@@ -232,7 +239,7 @@ export default function ProductsPage() {
                 setPriceRange('all');
               }}
             >
-              Réinitialiser
+              {t('products.reset')}
             </Button>
           </div>
         </aside>
@@ -242,17 +249,17 @@ export default function ProductsPage() {
           {/* Sort Options */}
           <div className="flex items-center justify-between mb-6">
             <p className="text-sm text-gray-600">
-              Affichage de {filteredProducts.length} résultats
+              {t('products.showing')} {filteredProducts.length} {t('products.results')}
             </p>
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
               className="px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-black"
             >
-              <option value="newest">Plus récents</option>
-              <option value="price-asc">Prix croissant</option>
-              <option value="price-desc">Prix décroissant</option>
-              <option value="popular">Popularité</option>
+              <option value="newest">{t('products.sort.newest')}</option>
+              <option value="price-asc">{t('products.sort.priceAsc')}</option>
+              <option value="price-desc">{t('products.sort.priceDesc')}</option>
+              <option value="popular">{t('products.sort.popular')}</option>
             </select>
           </div>
 
@@ -264,9 +271,9 @@ export default function ProductsPage() {
               <div className="inline-block p-6 bg-gray-50 rounded-full mb-4">
                 <Filter size={48} className="text-gray-400" />
               </div>
-              <h3 className="text-xl font-semibold text-gray-700 mb-2">Aucun produit trouvé</h3>
+              <h3 className="text-xl font-semibold text-gray-700 mb-2">{t('products.empty.title')}</h3>
               <p className="text-gray-500 mb-6">
-                Essayez de modifier vos filtres pour voir plus de résultats
+                {t('products.empty.description')}
               </p>
               <Button
                 variant="outline"
@@ -277,7 +284,7 @@ export default function ProductsPage() {
                   setPriceRange('all');
                 }}
               >
-                Réinitialiser les filtres
+                {t('products.resetFilters')}
               </Button>
             </div>
           ) : (
@@ -297,7 +304,7 @@ export default function ProductsPage() {
           {/* Load More */}
           <div className="mt-12 text-center">
             <Button variant="outline" size="lg">
-              Charger Plus
+              {t('products.loadMore')}
             </Button>
           </div>
         </div>

@@ -1,0 +1,49 @@
+{
+  "title": "Nos Produits",
+  "loading": "Chargement...",
+  "productsAvailable": "produits disponibles",
+  "filters": "Filtres",
+  "category": {
+    "title": "Catégorie",
+    "all": "Tous",
+    "femmes": "Femmes",
+    "enfants": "Enfants",
+    "accessoires": "Accessoires"
+  },
+  "size": {
+    "title": "Taille",
+    "allSizes": "Toutes les tailles"
+  },
+  "price": {
+    "title": "Prix",
+    "all": "Tous les prix",
+    "under3000": "Moins de 3000 DA",
+    "range3000": "3000 - 5000 DA",
+    "range5000": "5000 - 10000 DA",
+    "over10000": "Plus de 10000 DA"
+  },
+  "reset": "Réinitialiser",
+  "resetFilters": "Réinitialiser les filtres",
+  "showing": "Affichage de",
+  "results": "résultats",
+  "sort": {
+    "newest": "Plus récents",
+    "priceAsc": "Prix croissant",
+    "priceDesc": "Prix décroissant",
+    "popular": "Popularité"
+  },
+  "empty": {
+    "title": "Aucun produit trouvé",
+    "description": "Essayez de modifier vos filtres pour voir plus de résultats"
+  },
+  "loadMore": "Charger Plus",
+  "card": {
+    "new": "Nouveau",
+    "best": "Best",
+    "noImage": "Pas d'image",
+    "viewMore": "Voir Plus →",
+    "save": "Économisez",
+    "inStock": "En stock",
+    "outOfStock": "Rupture de stock"
+  }
+}

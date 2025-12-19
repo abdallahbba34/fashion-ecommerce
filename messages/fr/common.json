@@ -1,0 +1,32 @@
+{
+  "nav": {
+    "nouveautes": "Nouveautés",
+    "femmes": "Femmes",
+    "enfants": "Enfants",
+    "accessoires": "Accessoires",
+    "soldes": "Soldes",
+    "account": "Compte",
+    "cart": "Panier"
+  },
+  "banner": "Livraison gratuite pour toute commande supérieure à 5000 DA",
+  "footer": {
+    "about": "FASHION",
+    "aboutText": "Votre destination mode en Algérie. Découvrez les dernières tendances et styles pour femmes et enfants.",
+    "customerService": "Service Client",
+    "contact": "Contact",
+    "faq": "FAQ",
+    "shipping": "Livraison",
+    "returns": "Retours",
+    "legal": "Informations Légales",
+    "terms": "Conditions Générales",
+    "privacy": "Politique de Confidentialité",
+    "legalMentions": "Mentions Légales",
+    "stayConnected": "Restez Connecté",
+    "newsletter": "Inscrivez-vous à notre newsletter pour recevoir nos offres exclusives.",
+    "allRights": "Tous droits réservés"
+  },
+  "language": {
+    "french": "Français",
+    "arabic": "العربية"
+  }
+}

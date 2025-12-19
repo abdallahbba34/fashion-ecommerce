@@ -8,8 +8,10 @@ import { WILAYAS } from '@/types';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import toast from 'react-hot-toast';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export default function CheckoutPage() {
+  const { t } = useLanguage();
   const router = useRouter();
   const { items, getTotal, clearCart } = useCart();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,7 +43,54 @@ export default function CheckoutPage() {
     try {
       // Validate form
       if (!formData.fullName || !formData.phone || !formData.address || !formData.wilaya) {
-        toast.error('Veuillez remplir tous les champs obligatoires');
+        toast.error(t('checkout.errors.requiredFields'));
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Verify stock availability before creating order
+      const stockErrors: string[] = [];
+
+      // Load all products to check stock
+      const response = await fetch('/api/products?limit=100');
+      const data = await response.json();
+      const products = data.products;
+
+      for (const item of items) {
+        const product = products.find((p: any) => p._id === item.productId);
+        if (!product) {
+          stockErrors.push(`${item.name}: ${t('checkout.errors.productNotFound')}`);
+          continue;
+        }
+
+        const variant = product.variants?.find(
+          (v: any) => v.size === item.size && v.color === item.color
+        );
+
+        if (!variant) {
+          stockErrors.push(`${item.name} (${item.size}, ${item.color}): ${t('checkout.errors.variantNotFound')}`);
+          continue;
+        }
+
+        if (variant.stock < item.quantity) {
+          stockErrors.push(
+            `${item.name} (${item.size}, ${item.color}): ${t('checkout.errors.insufficientStock')} (${t('checkout.errors.available')}: ${variant.stock})`
+          );
+        }
+      }
+
+      if (stockErrors.length > 0) {
+        toast.error(
+          <div>
+            <strong>{t('checkout.errors.stockIssues')}</strong>
+            <ul className="mt-2 text-sm">
+              {stockErrors.map((error, index) => (
+                <li key={index}>• {error}</li>
+              ))}
+            </ul>
+          </div>,
+          { duration: 6000 }
+        );
         setIsSubmitting(false);
         return;
       }
@@ -71,10 +120,10 @@ export default function CheckoutPage() {
       // Clear cart
       clearCart();
 
-      toast.success('Commande passée avec succès !');
+      toast.success(t('checkout.success'));
       router.push('/order-confirmation');
     } catch (error) {
-      toast.error('Une erreur est survenue. Veuillez réessayer.');
+      toast.error(t('checkout.errors.error'));
       setIsSubmitting(false);
     }
   };
@@ -89,7 +138,7 @@ export default function CheckoutPage() {
     return (
       <div className="container mx-auto px-4 py-16">
         <div className="text-center">
-          <p className="text-gray-600">Redirection...</p>
+          <p className="text-gray-600">{t('checkout.redirecting')}</p>
         </div>
       </div>
     );
@@ -97,18 +146,18 @@ export default function CheckoutPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Finaliser la commande</h1>
+      <h1 className="text-3xl font-bold mb-8">{t('checkout.title')}</h1>
 
       <form onSubmit={handleSubmit}>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Checkout Form */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 mb-6">
-              <h2 className="text-xl font-semibold mb-4">Informations de livraison</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('checkout.shippingInfo.title')}</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <Input
-                  label="Nom complet *"
+                  label={`${t('checkout.shippingInfo.fullName')} ${t('checkout.shippingInfo.required')}`}
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleInputChange}
@@ -116,27 +165,27 @@ export default function CheckoutPage() {
                 />
 
                 <Input
-                  label="Email"
+                  label={t('checkout.shippingInfo.email')}
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="exemple@email.com"
+                  placeholder={t('checkout.shippingInfo.emailPlaceholder')}
                 />
 
                 <Input
-                  label="Téléphone *"
+                  label={`${t('checkout.shippingInfo.phone')} ${t('checkout.shippingInfo.required')}`}
                   type="tel"
                   name="phone"
                   value={formData.phone}
                   onChange={handleInputChange}
-                  placeholder="0555 12 34 56"
+                  placeholder={t('checkout.shippingInfo.phonePlaceholder')}
                   required
                 />
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Wilaya *
+                    {t('checkout.shippingInfo.wilaya')} {t('checkout.shippingInfo.required')}
                   </label>
                   <select
                     name="wilaya"
@@ -145,7 +194,7 @@ export default function CheckoutPage() {
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
-                    <option value="">Sélectionnez une wilaya</option>
+                    <option value="">{t('checkout.shippingInfo.selectWilaya')}</option>
                     {WILAYAS.map((wilaya) => (
                       <option key={wilaya} value={wilaya}>
                         {wilaya}
@@ -155,14 +204,14 @@ export default function CheckoutPage() {
                 </div>
 
                 <Input
-                  label="Ville"
+                  label={t('checkout.shippingInfo.city')}
                   name="city"
                   value={formData.city}
                   onChange={handleInputChange}
                 />
 
                 <Input
-                  label="Code postal"
+                  label={t('checkout.shippingInfo.postalCode')}
                   name="postalCode"
                   value={formData.postalCode}
                   onChange={handleInputChange}
@@ -170,18 +219,18 @@ export default function CheckoutPage() {
 
                 <div className="md:col-span-2">
                   <Input
-                    label="Adresse complète *"
+                    label={`${t('checkout.shippingInfo.address')} ${t('checkout.shippingInfo.required')}`}
                     name="address"
                     value={formData.address}
                     onChange={handleInputChange}
-                    placeholder="Rue, numéro, bâtiment..."
+                    placeholder={t('checkout.shippingInfo.addressPlaceholder')}
                     required
                   />
                 </div>
 
                 <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Notes de commande (optionnel)
+                    {t('checkout.shippingInfo.notes')}
                   </label>
                   <textarea
                     name="notes"
@@ -189,7 +238,7 @@ export default function CheckoutPage() {
                     onChange={handleInputChange}
                     rows={3}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                    placeholder="Instructions spéciales pour la livraison..."
+                    placeholder={t('checkout.shippingInfo.notesPlaceholder')}
                   />
                 </div>
               </div>
@@ -197,7 +246,7 @@ export default function CheckoutPage() {
 
             {/* Payment Method */}
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200">
-              <h2 className="text-xl font-semibold mb-4">Mode de paiement</h2>
+              <h2 className="text-xl font-semibold mb-4">{t('checkout.payment.title')}</h2>
               <div className="border rounded-lg p-4 bg-gray-50">
                 <div className="flex items-start gap-3">
                   <input
@@ -207,9 +256,9 @@ export default function CheckoutPage() {
                     className="mt-1"
                   />
                   <div>
-                    <h3 className="font-medium">Paiement à la livraison</h3>
+                    <h3 className="font-medium">{t('checkout.payment.cashOnDelivery')}</h3>
                     <p className="text-sm text-gray-600 mt-1">
-                      Payez en espèces lors de la réception de votre commande
+                      {t('checkout.payment.cashDescription')}
                     </p>
                   </div>
                 </div>
@@ -220,7 +269,7 @@ export default function CheckoutPage() {
           {/* Order Summary */}
           <div>
             <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 sticky top-4">
-              <h2 className="text-xl font-bold mb-4">Récapitulatif</h2>
+              <h2 className="text-xl font-bold mb-4">{t('checkout.summary.title')}</h2>
 
               {/* Items */}
               <div className="space-y-3 mb-4 max-h-60 overflow-y-auto">
@@ -244,15 +293,15 @@ export default function CheckoutPage() {
 
               <div className="border-t pt-4 space-y-3">
                 <div className="flex justify-between text-gray-600">
-                  <span>Sous-total</span>
+                  <span>{t('checkout.summary.subtotal')}</span>
                   <span>{formatPrice(subtotal)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Livraison</span>
+                  <span>{t('checkout.summary.shipping')}</span>
                   <span>{formatPrice(shippingCost)}</span>
                 </div>
                 <div className="border-t pt-3 flex justify-between font-bold text-lg">
-                  <span>Total</span>
+                  <span>{t('checkout.summary.total')}</span>
                   <span>{formatPrice(total)}</span>
                 </div>
               </div>
@@ -263,12 +312,12 @@ export default function CheckoutPage() {
                 className="w-full mt-6"
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Traitement...' : 'Confirmer la commande'}
+                {isSubmitting ? t('checkout.submit.processing') : t('checkout.submit.confirm')}
               </Button>
 
               <p className="mt-4 text-xs text-gray-600 text-center">
-                En confirmant votre commande, vous acceptez nos{' '}
-                <a href="/terms" className="underline">conditions générales</a>
+                {t('checkout.submit.terms')}{' '}
+                <a href="/terms" className="underline">{t('checkout.submit.termsLink')}</a>
               </p>
             </div>
           </div>

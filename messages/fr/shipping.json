@@ -1,0 +1,89 @@
+{
+  "title": "Livraison et Expédition",
+  "subtitle": "Recevez vos articles dans les meilleures conditions",
+  "hero": {
+    "title": "Livraison Rapide 48-72h",
+    "subtitle": "Dans toute l'Algérie",
+    "point1": "Livraison gratuite dès 5000 DA",
+    "point2": "Suivi de commande en temps réel",
+    "point3": "Emballage soigné et sécurisé",
+    "point4": "Partenaires de confiance"
+  },
+  "partners": {
+    "title": "Nos Partenaires de Livraison",
+    "yalidine": {
+      "title": "Yalidine",
+      "description": "Leader de la livraison en Algérie, Yalidine assure la livraison de vos colis dans les 58 wilayas avec un service professionnel et rapide.",
+      "badge1": "Couverture nationale",
+      "badge2": "Suivi en temps réel",
+      "badge3": "Livraison à domicile"
+    },
+    "note": "Note :",
+    "noteText": "D'autres partenaires de livraison peuvent être utilisés selon votre localisation pour garantir le meilleur service possible."
+  },
+  "delays": {
+    "title": "Délais de Livraison",
+    "major": {
+      "time": "48h",
+      "title": "Grandes villes",
+      "description": "Alger, Oran, Constantine, Annaba, Blida, Sétif, Batna..."
+    },
+    "other": {
+      "time": "72h",
+      "title": "Autres wilayas",
+      "description": "Livraison garantie dans les 72 heures pour l'ensemble du territoire national"
+    },
+    "important": "Important :",
+    "importantText": "Les délais sont donnés à titre indicatif et peuvent varier selon les conditions météorologiques, les jours fériés ou d'éventuels imprévus."
+  },
+  "zones": {
+    "title": "Zones de Livraison",
+    "description": "Nous livrons dans toutes les 58 wilayas d'Algérie, des grandes métropoles aux zones les plus reculées.",
+    "home": {
+      "title": "Livraison à domicile",
+      "description": "Votre colis est livré directement à votre adresse"
+    },
+    "relay": {
+      "title": "Point relais",
+      "description": "Récupération dans un point relais près de chez vous"
+    }
+  },
+  "costs": {
+    "title": "Frais de Livraison",
+    "free": "Livraison GRATUITE",
+    "freeText": "Pour toute commande supérieure à 5000 DA",
+    "tableHeader1": "Montant de la commande",
+    "tableHeader2": "Frais de livraison",
+    "row1Amount": "Moins de 2000 DA",
+    "row1Cost": "400 DA",
+    "row2Amount": "De 2000 DA à 4999 DA",
+    "row2Cost": "300 DA",
+    "row3Amount": "Plus de 5000 DA",
+    "row3Cost": "GRATUIT"
+  },
+  "conditions": {
+    "title": "Conditions de Livraison Optimales",
+    "packaging": {
+      "title": "Emballage sécurisé",
+      "description": "Tous nos produits sont soigneusement emballés pour garantir leur protection durant le transport."
+    },
+    "tracking": {
+      "title": "Suivi de commande",
+      "description": "Vous recevez un numéro de suivi pour suivre votre colis en temps réel jusqu'à la livraison."
+    },
+    "verification": {
+      "title": "Vérification à la livraison",
+      "description": "Vous pouvez vérifier votre colis avant de l'accepter. En cas de problème, refusez la livraison."
+    },
+    "support": {
+      "title": "Service client disponible",
+      "description": "Notre équipe est joignable 7j/7 pour répondre à vos questions sur votre livraison."
+    }
+  },
+  "contact": {
+    "title": "Questions sur votre livraison ?",
+    "description": "Contactez notre service client pour plus d'informations.",
+    "email": "Email :",
+    "availability": "Disponible 7j/7 de 9h à 20h"
+  }
+}
