@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { verifyAuth } from '@/lib/auth';
+import { verifyAdmin } from '@/lib/auth';
 import { connectDB } from '@/lib/db';
 import OrderModel from '@/models/Order';
 
 export async function POST(request: NextRequest) {
   try {
     // Verify admin authentication
-    const user = await verifyAuth(request);
+    const user = verifyAdmin(request);
     if (!user) {
       return NextResponse.json(
         { error: 'Non autorisé' },
