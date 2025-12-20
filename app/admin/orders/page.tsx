@@ -12,11 +12,8 @@ import { fr } from 'date-fns/locale';
 interface Order {
   _id: string;
   orderNumber: string;
-  customerInfo: {
-    firstName: string;
-    lastName: string;
-  };
   shippingAddress: {
+    fullName: string;
     wilaya: string;
   };
   total: number;
@@ -65,7 +62,7 @@ export default function AdminOrdersPage() {
     const query = searchQuery.toLowerCase();
     return (
       order.orderNumber.toLowerCase().includes(query) ||
-      `${order.customerInfo.firstName} ${order.customerInfo.lastName}`.toLowerCase().includes(query)
+      order.shippingAddress.fullName.toLowerCase().includes(query)
     );
   });
 
@@ -148,7 +145,7 @@ export default function AdminOrdersPage() {
                   <tr key={order._id} className="border-b hover:bg-gray-50">
                     <td className="py-4 font-medium">{order.orderNumber}</td>
                     <td className="py-4">
-                      {order.customerInfo.firstName} {order.customerInfo.lastName}
+                      {order.shippingAddress.fullName}
                     </td>
                     <td className="py-4">
                       {format(new Date(order.createdAt), 'dd/MM/yyyy', { locale: fr })}
