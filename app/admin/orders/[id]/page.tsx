@@ -14,17 +14,14 @@ import { fr } from 'date-fns/locale';
 interface Order {
   _id: string;
   orderNumber: string;
-  customerInfo: {
-    firstName: string;
-    lastName: string;
-    email: string;
-    phone: string;
-  };
+  guestEmail?: string;
   shippingAddress: {
+    fullName: string;
+    phone: string;
     address: string;
+    city: string;
     wilaya: string;
-    commune: string;
-    postalCode: string;
+    postalCode?: string;
   };
   items: Array<{
     productId: string;
@@ -39,6 +36,7 @@ interface Order {
   total: number;
   paymentMethod: string;
   status: string;
+  trackingNumber?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -61,6 +59,7 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [creatingParcel, setCreatingParcel] = useState(false);
 
   useEffect(() => {
     fetchOrder();
@@ -111,6 +110,36 @@ export default function OrderDetailPage() {
       toast.error('Erreur lors de la mise à jour du statut');
     } finally {
       setUpdating(false);
+    }
+  };
+
+  const createYalidineParcel = async () => {
+    if (!order) return;
+
+    setCreatingParcel(true);
+    try {
+      const response = await fetch('/api/yalidine/create-parcel', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderId: order._id }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Erreur lors de la création du colis');
+      }
+
+      // Refresh order data
+      await fetchOrder();
+      toast.success(`Colis créé avec succès ! N° de suivi: ${data.trackingNumber}`);
+    } catch (error: any) {
+      console.error('Error creating Yalidine parcel:', error);
+      toast.error(error.message || 'Erreur lors de la création du colis Yalidine');
+    } finally {
+      setCreatingParcel(false);
     }
   };
 
@@ -232,6 +261,44 @@ export default function OrderDetailPage() {
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Yalidine Delivery */}
+          <Card className="p-6">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <Truck className="mr-2" size={20} />
+              Livraison Yalidine
+            </h2>
+
+            {order.trackingNumber ? (
+              <div className="space-y-3">
+                <div>
+                  <p className="text-sm text-gray-600 mb-1">Numéro de suivi</p>
+                  <p className="font-mono font-semibold text-lg">{order.trackingNumber}</p>
+                </div>
+                <a
+                  href={`https://yalidine.app/tracking?trackingNumber=${order.trackingNumber}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block w-full px-4 py-2 bg-blue-600 text-white rounded-lg text-center hover:bg-blue-700 transition-colors"
+                >
+                  Suivre sur Yalidine
+                </a>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                <p className="text-sm text-gray-600">
+                  Créez un colis Yalidine pour cette commande
+                </p>
+                <button
+                  onClick={createYalidineParcel}
+                  disabled={creatingParcel}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {creatingParcel ? 'Création en cours...' : 'Remettre au livreur Yalidine'}
+                </button>
+              </div>
+            )}
+          </Card>
+
           {/* Change Status */}
           <Card className="p-6">
             <h2 className="text-xl font-semibold mb-4">Changer le statut</h2>
@@ -268,17 +335,17 @@ export default function OrderDetailPage() {
             <div className="space-y-3 text-sm">
               <div>
                 <p className="text-gray-600">Nom complet</p>
-                <p className="font-medium">
-                  {order.customerInfo.firstName} {order.customerInfo.lastName}
-                </p>
+                <p className="font-medium">{order.shippingAddress.fullName}</p>
               </div>
-              <div>
-                <p className="text-gray-600">Email</p>
-                <p className="font-medium">{order.customerInfo.email}</p>
-              </div>
+              {order.guestEmail && (
+                <div>
+                  <p className="text-gray-600">Email</p>
+                  <p className="font-medium">{order.guestEmail}</p>
+                </div>
+              )}
               <div>
                 <p className="text-gray-600">Téléphone</p>
-                <p className="font-medium">{order.customerInfo.phone}</p>
+                <p className="font-medium">{order.shippingAddress.phone}</p>
               </div>
             </div>
           </Card>
@@ -292,8 +359,8 @@ export default function OrderDetailPage() {
 
             <div className="space-y-1 text-sm">
               <p>{order.shippingAddress.address}</p>
-              <p>{order.shippingAddress.commune}</p>
-              <p>{order.shippingAddress.wilaya} {order.shippingAddress.postalCode}</p>
+              <p>{order.shippingAddress.city}</p>
+              <p>{order.shippingAddress.wilaya} {order.shippingAddress.postalCode || ''}</p>
             </div>
           </Card>
 
