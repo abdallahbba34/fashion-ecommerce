@@ -50,8 +50,8 @@ export async function GET(request: NextRequest) {
     });
 
     // Total customers (unique emails from orders)
-    const uniqueCustomers = await OrderModel.distinct('customerInfo.email');
-    const totalCustomers = uniqueCustomers.length;
+    const uniqueCustomers = await OrderModel.distinct('guestEmail');
+    const totalCustomers = uniqueCustomers.filter((email) => email).length;
 
     // Customers this month
     const customersThisMonthData = await OrderModel.aggregate([
@@ -62,11 +62,11 @@ export async function GET(request: NextRequest) {
       },
       {
         $group: {
-          _id: '$customerInfo.email'
+          _id: '$guestEmail'
         }
       }
     ]);
-    const customersThisMonth = customersThisMonthData.length;
+    const customersThisMonth = customersThisMonthData.filter((c) => c._id).length;
 
     // Customers last month
     const customersLastMonthData = await OrderModel.aggregate([
@@ -77,11 +77,11 @@ export async function GET(request: NextRequest) {
       },
       {
         $group: {
-          _id: '$customerInfo.email'
+          _id: '$guestEmail'
         }
       }
     ]);
-    const customersLastMonth = customersLastMonthData.length;
+    const customersLastMonth = customersLastMonthData.filter((c) => c._id).length;
 
     // Calculate customers change percentage
     const customersChange = customersLastMonth > 0
@@ -148,7 +148,7 @@ export async function GET(request: NextRequest) {
       .find()
       .sort({ createdAt: -1 })
       .limit(5)
-      .select('orderNumber customerInfo.firstName customerInfo.lastName createdAt total status');
+      .select('orderNumber shippingAddress.fullName createdAt total status');
 
     return NextResponse.json({
       stats: {

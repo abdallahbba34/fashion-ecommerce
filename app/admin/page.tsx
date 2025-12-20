@@ -19,9 +19,8 @@ interface Stats {
 interface RecentOrder {
   _id: string;
   orderNumber: string;
-  customerInfo: {
-    firstName: string;
-    lastName: string;
+  shippingAddress: {
+    fullName: string;
   };
   createdAt: string;
   total: number;
@@ -177,7 +176,7 @@ export default function AdminDashboard() {
                       </Link>
                     </td>
                     <td className="py-3">
-                      {order.customerInfo.firstName} {order.customerInfo.lastName}
+                      {order.shippingAddress.fullName}
                     </td>
                     <td className="py-3">
                       {format(new Date(order.createdAt), 'dd/MM/yyyy', { locale: fr })}
