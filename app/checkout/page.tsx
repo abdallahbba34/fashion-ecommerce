@@ -95,7 +95,7 @@ export default function CheckoutPage() {
         return;
       }
 
-      // Create order (API call will be added)
+      // Create order
       const orderData = {
         items,
         shippingAddress: {
@@ -114,8 +114,21 @@ export default function CheckoutPage() {
         notes: formData.notes,
       };
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Call API to create order
+      const orderResponse = await fetch('/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!orderResponse.ok) {
+        const errorData = await orderResponse.json();
+        throw new Error(errorData.error || 'Failed to create order');
+      }
+
+      const order = await orderResponse.json();
 
       // Clear cart
       clearCart();

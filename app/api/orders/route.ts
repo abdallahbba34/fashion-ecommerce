@@ -60,10 +60,35 @@ export async function POST(request: NextRequest) {
 
     const order = await OrderModel.create(orderData);
 
+    // Update product stock
+    const ProductModel = (await import('@/models/Product')).default;
+
+    for (const item of orderData.items) {
+      const product = await ProductModel.findById(item.productId);
+
+      if (product) {
+        // Find the variant that matches size and color
+        const variantIndex = product.variants.findIndex(
+          (v: any) => v.size === item.size && v.color === item.color
+        );
+
+        if (variantIndex !== -1) {
+          // Decrease stock by the ordered quantity
+          product.variants[variantIndex].stock -= item.quantity;
+
+          // Ensure stock doesn't go negative
+          if (product.variants[variantIndex].stock < 0) {
+            product.variants[variantIndex].stock = 0;
+          }
+
+          await product.save();
+        }
+      }
+    }
+
     // Here you can add:
     // - Send confirmation email
     // - Send SMS notification
-    // - Update product stock
     // - etc.
 
     return NextResponse.json(order, { status: 201 });
