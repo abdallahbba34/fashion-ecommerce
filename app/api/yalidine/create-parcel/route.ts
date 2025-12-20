@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { verifyAdmin } from '@/lib/auth';
 import { connectDB } from '@/lib/db';
 import OrderModel from '@/models/Order';
+import { getWilayaId } from '@/lib/yalidine-wilayas';
 
 export async function POST(request: NextRequest) {
   try {
@@ -65,15 +66,27 @@ export async function POST(request: NextRequest) {
       .map((item: any) => `${item.name} (${item.size}, ${item.color}) x${item.quantity}`)
       .join(', ');
 
+    // Get wilaya_id from wilaya name
+    const wilayaId = getWilayaId(order.shippingAddress.wilaya);
+
+    if (!wilayaId) {
+      return NextResponse.json(
+        {
+          error: `Wilaya "${order.shippingAddress.wilaya}" non reconnue. Veuillez vérifier le nom de la wilaya.`,
+          wilayaReceived: order.shippingAddress.wilaya
+        },
+        { status: 400 }
+      );
+    }
+
     // Prepare Yalidine parcel data
     const parcelData = {
       firstname,
       lastname,
       address: order.shippingAddress.address,
       phone: order.shippingAddress.phone,
-      // Note: You need to map wilaya name to wilaya_id using Yalidine's wilaya API
-      // For now, we'll send the wilaya name and commune as is
-      // In production, you should fetch wilaya_id and commune_id from Yalidine API
+      commune_id: 0, // Yalidine permet 0 si commune non spécifiée
+      wilaya_id: wilayaId,
       product_list: productList,
       order_id: order.orderNumber,
       is_stop_desk: false,
