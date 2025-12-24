@@ -1,74 +1,143 @@
 #!/bin/bash
 
-# Script de déploiement pour Fashion E-commerce sur LWS VPS
-# Usage: bash deploy.sh
+# Script de déploiement automatique pour le VPS
+# Usage: ./deploy.sh
 
-echo "🚀 Démarrage du déploiement..."
+echo "🚀 Déploiement de Fashion E-commerce..."
+echo ""
+
+# Configuration - MODIFIEZ CES VALEURS
+VPS_USER="root"
+VPS_HOST="lasuitechic.online"
+VPS_PROJECT_PATH="/var/www/lasuitechic"
+VPS_PORT="22"
 
 # Couleurs pour les messages
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 RED='\033[0;31m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Variables (à modifier selon votre configuration)
-APP_DIR="/home/votre_user/fashion-ecommerce"
+# Fonction pour afficher les messages
+log_info() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+log_warning() {
+    echo -e "${YELLOW}⚠${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}✗${NC} $1"
+}
+
+# Vérifier que les modifications locales sont commitées
+echo "📋 Vérification des modifications locales..."
+if [[ -n $(git status -s) ]]; then
+    log_warning "Vous avez des modifications non commitées!"
+    echo "Voulez-vous continuer quand même? (y/n)"
+    read -r response
+    if [[ ! "$response" =~ ^[Yy]$ ]]; then
+        echo "Déploiement annulé."
+        exit 1
+    fi
+fi
+log_info "OK"
+
+# Afficher le dernier commit
+echo ""
+echo "📦 Dernier commit:"
+git log -1 --oneline
+echo ""
+
+# Confirmation
+echo "Voulez-vous déployer sur le VPS ${VPS_HOST}? (y/n)"
+read -r confirm
+if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+    echo "Déploiement annulé."
+    exit 1
+fi
+
+echo ""
+echo "🔄 Connexion au VPS et déploiement..."
+echo ""
+
+# Commandes à exécuter sur le VPS
+ssh -p $VPS_PORT $VPS_USER@$VPS_HOST << 'ENDSSH'
+
+# Couleurs
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+log_info() {
+    echo -e "${GREEN}✓${NC} $1"
+}
+
+log_error() {
+    echo -e "${RED}✗${NC} $1"
+}
+
+# Variables
+PROJECT_PATH="/var/www/lasuitechic"
 APP_NAME="fashion-ecommerce"
 
-# Vérifier si on est dans le bon répertoire
-if [ ! -f "package.json" ]; then
-    echo -e "${RED}❌ Erreur: package.json non trouvé. Exécutez ce script depuis la racine du projet.${NC}"
-    exit 1
-fi
+echo "📂 Navigation vers le projet..."
+cd $PROJECT_PATH || { log_error "Le répertoire $PROJECT_PATH n'existe pas!"; exit 1; }
+log_info "Dans $PROJECT_PATH"
 
-# Vérifier si .env.production existe
-if [ ! -f ".env.production" ]; then
-    echo -e "${RED}❌ Erreur: .env.production non trouvé.${NC}"
-    echo "Créez le fichier .env.production en vous basant sur .env.production.example"
-    exit 1
-fi
+echo ""
+echo "🔄 Récupération des modifications..."
+git pull origin main || { log_error "Erreur lors du git pull!"; exit 1; }
+log_info "Git pull réussi"
 
-echo -e "${YELLOW}📦 Installation des dépendances...${NC}"
-npm install --production
+echo ""
+echo "📦 Installation des dépendances..."
+npm install --production || { log_error "Erreur npm install!"; exit 1; }
+log_info "Dépendances installées"
 
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Erreur lors de l'installation des dépendances${NC}"
-    exit 1
-fi
+echo ""
+echo "🏗️  Build du projet..."
+npm run build || { log_error "Erreur build!"; exit 1; }
+log_info "Build réussi"
 
-echo -e "${YELLOW}🔨 Build de production...${NC}"
-npm run build
+echo ""
+echo "🔄 Redémarrage de l'application..."
 
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Erreur lors du build${NC}"
-    exit 1
-fi
-
-echo -e "${YELLOW}🔄 Redémarrage de l'application avec PM2...${NC}"
-
-# Vérifier si l'app existe déjà dans PM2
-if pm2 list | grep -q "$APP_NAME"; then
-    echo "Application trouvée dans PM2, redémarrage..."
-    pm2 restart $APP_NAME
+if command -v pm2 &> /dev/null; then
+    echo "Utilisation de PM2..."
+    if pm2 list | grep -q "$APP_NAME"; then
+        pm2 restart $APP_NAME
+        log_info "Application redémarrée"
+    else
+        pm2 start npm --name "$APP_NAME" -- start
+        pm2 save
+        log_info "Application démarrée"
+    fi
+    echo ""
+    pm2 info $APP_NAME
+elif systemctl is-active --quiet fashion-ecommerce; then
+    echo "Utilisation de systemd..."
+    sudo systemctl restart fashion-ecommerce
+    log_info "Service redémarré"
+    echo ""
+    sudo systemctl status fashion-ecommerce --no-pager
 else
-    echo "Première installation, démarrage avec PM2..."
-    pm2 start ecosystem.config.js
-    pm2 save
+    log_error "Aucun gestionnaire détecté!"
 fi
 
-if [ $? -ne 0 ]; then
-    echo -e "${RED}❌ Erreur lors du redémarrage PM2${NC}"
+echo ""
+log_info "Déploiement terminé!"
+
+ENDSSH
+
+if [ $? -eq 0 ]; then
+    echo ""
+    log_info "✅ Déploiement réussi!"
+    echo ""
+    echo "🌐 Site mis à jour sur: http://${VPS_HOST}"
+else
+    echo ""
+    log_error "❌ Erreur lors du déploiement!"
     exit 1
 fi
-
-echo -e "${GREEN}✅ Déploiement réussi !${NC}"
-echo ""
-echo "📊 Status de l'application:"
-pm2 status
-
-echo ""
-echo "📝 Pour voir les logs:"
-echo "   pm2 logs $APP_NAME"
-echo ""
-echo "🌐 Votre site devrait être accessible à:"
-echo "   http://votresite.com (configurez votre domaine dans Nginx)"
