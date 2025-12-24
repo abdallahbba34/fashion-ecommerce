@@ -18,13 +18,8 @@ export default function CheckoutPage() {
 
   const [formData, setFormData] = useState({
     fullName: '',
-    email: '',
     phone: '',
-    address: '',
-    city: '',
     wilaya: '',
-    postalCode: '',
-    notes: '',
   });
 
   const subtotal = getTotal();
@@ -42,7 +37,7 @@ export default function CheckoutPage() {
 
     try {
       // Validate form
-      if (!formData.fullName || !formData.phone || !formData.address || !formData.wilaya) {
+      if (!formData.fullName || !formData.phone || !formData.wilaya) {
         toast.error(t('checkout.errors.requiredFields'));
         setIsSubmitting(false);
         return;
@@ -101,17 +96,17 @@ export default function CheckoutPage() {
         shippingAddress: {
           fullName: formData.fullName,
           phone: formData.phone,
-          address: formData.address,
-          city: formData.city,
+          address: '',
+          city: '',
           wilaya: formData.wilaya,
-          postalCode: formData.postalCode,
+          postalCode: '',
         },
-        guestEmail: formData.email,
+        guestEmail: '',
         subtotal,
         shippingCost,
         total,
         paymentMethod: 'cash_on_delivery',
-        notes: formData.notes,
+        notes: '',
       };
 
       // Call API to create order
@@ -169,36 +164,32 @@ export default function CheckoutPage() {
               <h2 className="text-xl font-semibold mb-4">{t('checkout.shippingInfo.title')}</h2>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Input
-                  label={`${t('checkout.shippingInfo.fullName')} ${t('checkout.shippingInfo.required')}`}
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleInputChange}
-                  required
-                />
+                <div className="md:col-span-2">
+                  <Input
+                    label="Nom et Prénom *"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleInputChange}
+                    placeholder="Ex: Mohammed Benali"
+                    required
+                  />
+                </div>
 
-                <Input
-                  label={t('checkout.shippingInfo.email')}
-                  type="email"
-                  name="email"
-                  value={formData.email}
-                  onChange={handleInputChange}
-                  placeholder={t('checkout.shippingInfo.emailPlaceholder')}
-                />
+                <div className="md:col-span-2">
+                  <Input
+                    label="Téléphone *"
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    placeholder="Ex: 0555 12 34 56"
+                    required
+                  />
+                </div>
 
-                <Input
-                  label={`${t('checkout.shippingInfo.phone')} ${t('checkout.shippingInfo.required')}`}
-                  type="tel"
-                  name="phone"
-                  value={formData.phone}
-                  onChange={handleInputChange}
-                  placeholder={t('checkout.shippingInfo.phonePlaceholder')}
-                  required
-                />
-
-                <div>
+                <div className="md:col-span-2">
                   <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('checkout.shippingInfo.wilaya')} {t('checkout.shippingInfo.required')}
+                    Wilaya *
                   </label>
                   <select
                     name="wilaya"
@@ -207,52 +198,13 @@ export default function CheckoutPage() {
                     required
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
                   >
-                    <option value="">{t('checkout.shippingInfo.selectWilaya')}</option>
+                    <option value="">Sélectionnez votre wilaya</option>
                     {WILAYAS.map((wilaya) => (
                       <option key={wilaya} value={wilaya}>
                         {wilaya}
                       </option>
                     ))}
                   </select>
-                </div>
-
-                <Input
-                  label={t('checkout.shippingInfo.city')}
-                  name="city"
-                  value={formData.city}
-                  onChange={handleInputChange}
-                />
-
-                <Input
-                  label={t('checkout.shippingInfo.postalCode')}
-                  name="postalCode"
-                  value={formData.postalCode}
-                  onChange={handleInputChange}
-                />
-
-                <div className="md:col-span-2">
-                  <Input
-                    label={`${t('checkout.shippingInfo.address')} ${t('checkout.shippingInfo.required')}`}
-                    name="address"
-                    value={formData.address}
-                    onChange={handleInputChange}
-                    placeholder={t('checkout.shippingInfo.addressPlaceholder')}
-                    required
-                  />
-                </div>
-
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    {t('checkout.shippingInfo.notes')}
-                  </label>
-                  <textarea
-                    name="notes"
-                    value={formData.notes}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-black focus:border-transparent"
-                    placeholder={t('checkout.shippingInfo.notesPlaceholder')}
-                  />
                 </div>
               </div>
             </div>

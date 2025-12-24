@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { verifyAdmin } from '@/lib/auth';
 import { connectDB } from '@/lib/db';
 import SettingsModel from '@/models/Settings';
 
@@ -59,6 +60,15 @@ export async function GET(request: NextRequest) {
 // PUT /api/settings - Update settings (Admin only)
 export async function PUT(request: NextRequest) {
   try {
+    // Verify admin authentication
+    const user = verifyAdmin(request);
+    if (!user) {
+      return NextResponse.json(
+        { error: 'Non autorisé' },
+        { status: 401 }
+      );
+    }
+
     await connectDB();
 
     const body = await request.json();
