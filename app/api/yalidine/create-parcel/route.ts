@@ -15,7 +15,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { orderId } = await request.json();
+    const body = await request.json();
+    const { orderId } = body;
 
     if (!orderId) {
       return NextResponse.json(
@@ -56,46 +57,125 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Split fullName into first and last name
-    const nameParts = order.shippingAddress.fullName.trim().split(' ');
-    const firstname = nameParts[0];
-    const lastname = nameParts.slice(1).join(' ') || firstname;
+    // Check if form data is provided (from modal), otherwise use order data (fallback)
+    let parcelData: any;
 
-    // Prepare product list
-    const productList = order.items
-      .map((item: any) => `${item.name} (${item.size}, ${item.color}) x${item.quantity}`)
-      .join(', ');
+    if (body.firstname && body.familyname) {
+      // Using form data from YalidineParcelForm modal
+      parcelData = {
+        firstname: body.firstname,
+        familyname: body.familyname,
+        contact_phone: body.contact_phone,
+        address: body.address,
+        product_list: body.product_list,
+        order_id: body.order_id,
+        price: body.price,
+        freeshipping: body.freeshipping || false,
+        is_stopdesk: body.is_stopdesk || false,
+        has_exchange: body.has_exchange || false,
+        do_insurance: body.do_insurance || false,
+      };
 
-    // Get wilaya_id from wilaya name
-    const wilayaId = getWilayaId(order.shippingAddress.wilaya);
+      // Add wilaya_id (required)
+      if (body.wilaya_id) {
+        parcelData.wilaya_id = body.wilaya_id;
+      }
 
-    if (!wilayaId) {
-      return NextResponse.json(
-        {
-          error: `Wilaya "${order.shippingAddress.wilaya}" non reconnue. Veuillez vérifier le nom de la wilaya.`,
-          wilayaReceived: order.shippingAddress.wilaya
-        },
-        { status: 400 }
-      );
+      // Add commune_id or to_commune_name
+      if (body.commune_id) {
+        parcelData.commune_id = body.commune_id;
+      } else if (body.to_commune_name) {
+        parcelData.to_commune_name = body.to_commune_name;
+      }
+
+      // Add optional fields if provided
+      if (body.stopdesk_id && body.is_stopdesk) {
+        parcelData.stopdesk_id = body.stopdesk_id;
+      }
+      if (body.height) parcelData.height = body.height;
+      if (body.width) parcelData.width = body.width;
+      if (body.length) parcelData.length = body.length;
+      if (body.weight) parcelData.weight = body.weight;
+    } else {
+      // Fallback: Using order data (old behavior)
+      // Split fullName into first and last name
+      const nameParts = order.shippingAddress.fullName.trim().split(' ');
+      const firstname = nameParts[0];
+      const lastname = nameParts.slice(1).join(' ') || firstname;
+
+      // Prepare product list
+      const productList = order.items
+        .map((item: any) => `${item.name} (${item.size}, ${item.color}) x${item.quantity}`)
+        .join(', ');
+
+      // Get wilaya_id from wilaya name
+      const wilayaId = getWilayaId(order.shippingAddress.wilaya);
+
+      if (!wilayaId) {
+        return NextResponse.json(
+          {
+            error: `Wilaya "${order.shippingAddress.wilaya}" non reconnue. Veuillez vérifier le nom de la wilaya.`,
+            wilayaReceived: order.shippingAddress.wilaya
+          },
+          { status: 400 }
+        );
+      }
+
+      // Check if order uses a stop desk
+      let centerInfo = null;
+      if (order.stopDeskId) {
+        // Récupérer les infos du centre depuis l'API Yalidine
+        try {
+          const centerResponse = await fetch(`https://api.yalidine.app/v1/centers/?center_id=${order.stopDeskId}`, {
+            method: 'GET',
+            headers: {
+              'X-API-ID': yalidineApiId,
+              'X-API-TOKEN': yalidineApiToken,
+            },
+          });
+
+          if (centerResponse.ok) {
+            const centerData = await centerResponse.json();
+            if (centerData.data && centerData.data.length > 0) {
+              centerInfo = centerData.data[0];
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching center info:', error);
+          // Continue sans center info - utilisera l'adresse de la commande
+        }
+      }
+
+      // Prepare Yalidine parcel data
+      parcelData = {
+        firstname,
+        lastname,
+        address: order.shippingAddress.address,
+        phone: order.shippingAddress.phone,
+        wilaya_id: wilayaId,
+        product_list: productList,
+        order_id: order.orderNumber,
+        price: order.total,
+        do_insurance: false,
+        freeshipping: false,
+        has_exchange: false,
+      };
+
+      // Si un stop desk est sélectionné, ajouter les infos
+      if (order.stopDeskId && centerInfo) {
+        parcelData.is_stop_desk = true;
+        parcelData.center_id = centerInfo.center_id;
+        parcelData.commune_id = centerInfo.commune_id;
+      } else {
+        parcelData.is_stop_desk = false;
+        parcelData.commune_id = 0; // 0 pour livraison à domicile sans commune spécifiée
+      }
     }
 
-    // Prepare Yalidine parcel data
-    const parcelData = {
-      firstname,
-      lastname,
-      address: order.shippingAddress.address,
-      phone: order.shippingAddress.phone,
-      commune_id: 0, // Yalidine permet 0 si commune non spécifiée
-      wilaya_id: wilayaId,
-      product_list: productList,
-      order_id: order.orderNumber,
-      is_stop_desk: false,
-      // Optional fields
-      price: order.total,
-      do_insurance: false,
-      freeshipping: false,
-      has_exchange: false,
-    };
+    // Log des données envoyées pour debug
+    console.log('=== YALIDINE PARCEL DATA ===');
+    console.log('order_id:', parcelData.order_id);
+    console.log('Full parcelData:', JSON.stringify(parcelData, null, 2));
 
     // Call Yalidine API
     const yalidineResponse = await fetch('https://api.yalidine.app/v1/parcels/', {
