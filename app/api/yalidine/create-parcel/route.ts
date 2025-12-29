@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
         order_id: body.order_id,
         price: body.price,
         freeshipping: body.freeshipping || false,
-        is_stopdesk: body.is_stopdesk || false,
+        is_stop_desk: body.is_stopdesk || false,  // ← CORRECTION : underscore
         has_exchange: body.has_exchange || false,
         do_insurance: body.do_insurance || false,
       };
@@ -81,17 +81,24 @@ export async function POST(request: NextRequest) {
         parcelData.wilaya_id = body.wilaya_id;
       }
 
-      // Add commune_id or to_commune_name
-      if (body.commune_id) {
-        parcelData.commune_id = body.commune_id;
-      } else if (body.to_commune_name) {
-        parcelData.to_commune_name = body.to_commune_name;
+      // Handle stop desk vs home delivery
+      if (body.is_stopdesk && body.stopdesk_id) {
+        // Stop desk delivery
+        parcelData.center_id = body.stopdesk_id;
+        // commune_id will be automatically determined from center_id by Yalidine API
+      } else {
+        // Home delivery
+        if (body.commune_id) {
+          parcelData.commune_id = body.commune_id;
+        } else if (body.to_commune_name) {
+          parcelData.to_commune_name = body.to_commune_name;
+        } else {
+          // Default to 0 for home delivery without specific commune
+          parcelData.commune_id = 0;
+        }
       }
 
-      // Add optional fields if provided
-      if (body.stopdesk_id && body.is_stopdesk) {
-        parcelData.stopdesk_id = body.stopdesk_id;
-      }
+      // Add optional dimensions if provided
       if (body.height) parcelData.height = body.height;
       if (body.width) parcelData.width = body.width;
       if (body.length) parcelData.length = body.length;
