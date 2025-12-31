@@ -9,6 +9,7 @@ import { ShoppingBag, Heart, Share2, TruckIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { trackViewContent, trackAddToCart } from '@/components/FacebookPixel';
 
 interface Product {
   _id: string;
@@ -53,6 +54,9 @@ export default function ProductDetailPage() {
         }
         const data = await response.json();
         setProduct(data);
+
+        // Track ViewContent event for Facebook Pixel
+        trackViewContent(data.name, data.price);
       } catch (error) {
         console.error('Error loading product:', error);
         toast.error(t('productDetail.notFound'));
@@ -122,6 +126,9 @@ export default function ProductDetailPage() {
       quantity,
     });
 
+    // Track AddToCart event for Facebook Pixel
+    trackAddToCart(product.name, product.price * quantity);
+
     toast.success(t('productDetail.addedToCart'));
   };
 
@@ -145,6 +152,7 @@ export default function ProductDetailPage() {
                 className="object-cover"
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 priority
+                unoptimized
               />
             ) : (
               <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center">
@@ -170,6 +178,7 @@ export default function ProductDetailPage() {
                   fill
                   className="object-cover"
                   sizes="150px"
+                  unoptimized
                 />
               </button>
             ))}
