@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { formatPrice } from '@/lib/utils';
 import type { Product } from '@/types';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { Tag, CheckCircle, XCircle } from 'lucide-react';
 
 interface ProductCardProps {
   product: Product;
@@ -23,8 +24,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         {/* Badges */}
         <div className="absolute top-3 left-3 z-10 flex flex-col gap-2 animate-slideInLeft">
           {product.newArrival && (
-            <span className="bg-black text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
-              ✨ {t('products.card.new')}
+            <span className="bg-black text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+              <span>✨</span>
+              <span>{t('products.card.new')}</span>
             </span>
           )}
           {hasDiscount && (
@@ -33,14 +35,15 @@ export default function ProductCard({ product }: ProductCardProps) {
             </span>
           )}
           {product.bestseller && !product.newArrival && (
-            <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg">
-              ⭐ {t('products.card.best')}
+            <span className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5">
+              <span>⭐</span>
+              <span>{t('products.card.best')}</span>
             </span>
           )}
         </div>
 
         {/* Product Image */}
-        {product.images && product.images.length > 0 ? (
+        {product.images && product.images.length > 0 && product.images[0] ? (
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -48,6 +51,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
             sizes="(max-width: 768px) 50vw, 33vw"
             loading="lazy"
+            unoptimized
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center group-hover:scale-110 transition-transform duration-500">
@@ -72,20 +76,24 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.category}
         </p>
 
-        <div className="flex items-baseline gap-2 mb-2">
-          <span className="text-lg font-bold text-black">
-            {formatPrice(product.price)}
-          </span>
-          {hasDiscount && (
-            <span className="text-sm text-gray-400 line-through">
-              {formatPrice(product.compareAtPrice!)}
+        <div className="flex items-center gap-2 mb-2">
+          <Tag size={16} className="text-gray-500" />
+          <div className="flex items-baseline gap-2">
+            <span className="text-lg font-bold text-black">
+              {formatPrice(product.price)}
             </span>
-          )}
+            {hasDiscount && (
+              <span className="text-sm text-gray-400 line-through">
+                {formatPrice(product.compareAtPrice!)}
+              </span>
+            )}
+          </div>
         </div>
 
         {hasDiscount && (
           <div className="mb-2">
-            <span className="inline-block text-xs font-semibold text-green-700 bg-green-50 px-2 py-1 rounded">
+            <span className="inline-block text-xs font-semibold text-green-700 bg-green-50 px-2 py-1 rounded flex items-center gap-1 w-fit">
+              <Tag size={12} />
               {t('products.card.save')} {formatPrice(product.compareAtPrice! - product.price)}
             </span>
           </div>
@@ -113,9 +121,15 @@ export default function ProductCard({ product }: ProductCardProps) {
         {product.variants && product.variants.length > 0 && (
           <div className="mt-2">
             {product.variants.some((v: any) => v.stock > 0) ? (
-              <span className="text-xs text-green-600 font-medium">✓ {t('products.card.inStock')}</span>
+              <span className="text-xs text-green-600 font-medium flex items-center gap-1">
+                <CheckCircle size={14} />
+                {t('products.card.inStock')}
+              </span>
             ) : (
-              <span className="text-xs text-red-600 font-medium">{t('products.card.outOfStock')}</span>
+              <span className="text-xs text-red-600 font-medium flex items-center gap-1">
+                <XCircle size={14} />
+                {t('products.card.outOfStock')}
+              </span>
             )}
           </div>
         )}

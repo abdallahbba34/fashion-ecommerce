@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
+import YalidineParcelForm from '@/components/YalidineParcelForm';
 import { ArrowLeft, Package, User, MapPin, CreditCard, Truck } from 'lucide-react';
 import { formatPrice } from '@/lib/utils';
 import toast from 'react-hot-toast';
@@ -59,7 +60,7 @@ export default function OrderDetailPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [creatingParcel, setCreatingParcel] = useState(false);
+  const [showYalidineModal, setShowYalidineModal] = useState(false);
 
   useEffect(() => {
     fetchOrder();
@@ -113,34 +114,9 @@ export default function OrderDetailPage() {
     }
   };
 
-  const createYalidineParcel = async () => {
-    if (!order) return;
-
-    setCreatingParcel(true);
-    try {
-      const response = await fetch('/api/yalidine/create-parcel', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orderId: order._id }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Erreur lors de la création du colis');
-      }
-
-      // Refresh order data
-      await fetchOrder();
-      toast.success(`Colis créé avec succès ! N° de suivi: ${data.trackingNumber}`);
-    } catch (error: any) {
-      console.error('Error creating Yalidine parcel:', error);
-      toast.error(error.message || 'Erreur lors de la création du colis Yalidine');
-    } finally {
-      setCreatingParcel(false);
-    }
+  const handleYalidineSuccess = async () => {
+    // Refresh order data after successful parcel creation
+    await fetchOrder();
   };
 
   if (loading) {
@@ -289,11 +265,10 @@ export default function OrderDetailPage() {
                   Créez un colis Yalidine pour cette commande
                 </p>
                 <button
-                  onClick={createYalidineParcel}
-                  disabled={creatingParcel}
-                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => setShowYalidineModal(true)}
+                  className="w-full px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                 >
-                  {creatingParcel ? 'Création en cours...' : 'Remettre au livreur Yalidine'}
+                  Remettre au livreur Yalidine
                 </button>
               </div>
             )}
@@ -377,6 +352,16 @@ export default function OrderDetailPage() {
           </Card>
         </div>
       </div>
+
+      {/* Yalidine Parcel Form Modal */}
+      {order && (
+        <YalidineParcelForm
+          order={order}
+          isOpen={showYalidineModal}
+          onClose={() => setShowYalidineModal(false)}
+          onSuccess={handleYalidineSuccess}
+        />
+      )}
     </div>
   );
 }

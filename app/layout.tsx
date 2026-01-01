@@ -8,6 +8,7 @@ import Footer from '@/components/layout/Footer';
 import ScrollToTop from '@/components/ui/ScrollToTop';
 import { Toaster } from 'react-hot-toast';
 import { LanguageProvider } from '@/contexts/LanguageContext';
+import FacebookPixel from '@/components/FacebookPixel';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const tajawal = Tajawal({
@@ -29,6 +30,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning>
       <body className={`${inter.variable} ${tajawal.variable} font-sans`} suppressHydrationWarning>
+        <FacebookPixel />
         <LanguageProvider>
           <div className="flex flex-col min-h-screen">
             <ClientHeader />

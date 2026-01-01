@@ -68,6 +68,8 @@ export interface OrderItem {
   image: string;
 }
 
+export type OrderSource = 'website' | 'facebook' | 'instagram' | 'whatsapp' | 'other';
+
 export interface Order {
   _id: string;
   orderNumber: string;
@@ -83,6 +85,9 @@ export interface Order {
   status: OrderStatus;
   notes?: string;
   trackingNumber?: string;
+  stopDeskId?: number;
+  source?: OrderSource;
+  referralInfo?: string;
   createdAt: Date;
   updatedAt: Date;
 }

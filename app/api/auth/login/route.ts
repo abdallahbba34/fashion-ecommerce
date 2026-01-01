@@ -5,7 +5,16 @@ import { generateToken } from '@/lib/auth';
 
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    // Try to connect to database
+    try {
+      await connectDB();
+    } catch (dbError) {
+      console.error('Database connection error:', dbError);
+      return NextResponse.json(
+        { error: 'Erreur de connexion à la base de données. Veuillez contacter l\'administrateur.' },
+        { status: 503 }
+      );
+    }
 
     const { email, password } = await request.json();
 

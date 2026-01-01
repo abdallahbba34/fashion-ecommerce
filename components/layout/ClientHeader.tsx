@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/store/cart';
 import { useLanguage } from '@/contexts/LanguageContext';
-import { ShoppingBag, Search, Menu, X, User } from 'lucide-react';
+import { ShoppingBag, Search, Menu, X, User, Sparkles, Users, Baby, Watch, Tag, Home } from 'lucide-react';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function ClientHeader() {
@@ -13,11 +13,11 @@ export default function ClientHeader() {
   const { t } = useLanguage();
 
   const categories = [
-    { name: t('nav.nouveautes'), href: '/products?filter=new' },
-    { name: t('nav.femmes'), href: '/products?category=femmes' },
-    { name: t('nav.enfants'), href: '/products?category=enfants' },
-    { name: t('nav.accessoires'), href: '/products?category=accessoires' },
-    { name: t('nav.soldes'), href: '/products?filter=sale' },
+    { name: t('nav.nouveautes'), href: '/products?filter=new', icon: Sparkles },
+    { name: t('nav.femmes'), href: '/products?category=femmes', icon: Users },
+    { name: t('nav.enfants'), href: '/products?category=enfants', icon: Baby },
+    { name: t('nav.accessoires'), href: '/products?category=accessoires', icon: Watch },
+    { name: t('nav.soldes'), href: '/products?filter=sale', icon: Tag },
   ];
 
   return (
@@ -44,20 +44,24 @@ export default function ClientHeader() {
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                href={category.href}
-                className="text-sm font-medium hover:text-gray-600 transition-colors"
-              >
-                {category.name}
-              </Link>
-            ))}
+          <nav className="hidden lg:flex items-center gap-6">
+            {categories.map((category) => {
+              const Icon = category.icon;
+              return (
+                <Link
+                  key={category.name}
+                  href={category.href}
+                  className="flex items-center gap-2 text-sm font-medium hover:text-gray-600 transition-colors whitespace-nowrap group"
+                >
+                  <Icon size={18} className="text-gray-500 group-hover:text-gray-700" />
+                  {category.name}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Right Icons */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <button className="p-2 hover:bg-gray-100 rounded-lg">
               <Search size={20} />
             </button>
@@ -79,16 +83,28 @@ export default function ClientHeader() {
         {/* Mobile Navigation */}
         {isMenuOpen && (
           <nav className="lg:hidden py-4 border-t border-gray-200">
-            {categories.map((category) => (
-              <Link
-                key={category.name}
-                href={category.href}
-                className="block py-3 text-sm font-medium hover:bg-gray-50 px-2 rounded-lg"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {category.name}
-              </Link>
-            ))}
+            <Link
+              href="/"
+              className="flex items-center gap-3 py-3 text-sm font-medium hover:bg-gray-50 px-3 rounded-lg"
+              onClick={() => setIsMenuOpen(false)}
+            >
+              <Home size={20} className="text-gray-500" />
+              {t('nav.accueil') || 'Accueil'}
+            </Link>
+            {categories.map((category) => {
+              const Icon = category.icon;
+              return (
+                <Link
+                  key={category.name}
+                  href={category.href}
+                  className="flex items-center gap-3 py-3 text-sm font-medium hover:bg-gray-50 px-3 rounded-lg"
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  <Icon size={20} className="text-gray-500" />
+                  {category.name}
+                </Link>
+              );
+            })}
           </nav>
         )}
       </div>

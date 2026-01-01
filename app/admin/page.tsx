@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Package, ShoppingCart, Users, TrendingUp } from 'lucide-react';
 import Card from '@/components/ui/Card';
+import SourceStatistics from '@/components/admin/SourceStatistics';
 import { formatPrice } from '@/lib/utils';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
@@ -143,6 +144,11 @@ export default function AdminDashboard() {
             </div>
           </Card>
         ))}
+      </div>
+
+      {/* Source Statistics */}
+      <div className="mb-8">
+        <SourceStatistics />
       </div>
 
       {/* Recent Orders */}

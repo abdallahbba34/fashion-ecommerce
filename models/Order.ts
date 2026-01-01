@@ -43,6 +43,14 @@ const OrderSchema = new Schema<Order>(
     },
     notes: { type: String },
     trackingNumber: { type: String },
+    stopDeskId: { type: Number },
+    // Tracking de la source de la commande
+    source: {
+      type: String,
+      enum: ['website', 'facebook', 'instagram', 'whatsapp', 'other'],
+      default: 'website'
+    },
+    referralInfo: { type: String }, // Pour stocker des infos supplémentaires (ex: nom de la campagne)
   },
   { timestamps: true }
 );

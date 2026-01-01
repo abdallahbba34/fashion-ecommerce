@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/store/cart';
 import { formatPrice } from '@/lib/utils';
 import Button from '@/components/ui/Button';
-import { Trash2, ShoppingBag } from 'lucide-react';
+import { Trash2, ShoppingBag, Package, Truck, CreditCard, ShieldCheck, Minus, Plus } from 'lucide-react';
 import { useLanguage } from '@/contexts/LanguageContext';
 import toast from 'react-hot-toast';
 
@@ -88,7 +88,10 @@ export default function CartPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">{t('cart.title')} ({items.length})</h1>
+      <h1 className="text-3xl font-bold mb-8 flex items-center gap-3">
+        <ShoppingBag size={32} />
+        {t('cart.title')} ({items.length})
+      </h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Cart Items */}
@@ -133,11 +136,12 @@ export default function CartPage() {
                             Math.max(1, item.quantity - 1)
                           )
                         }
-                        className="px-3 py-1 hover:bg-gray-100"
+                        className="px-3 py-2 hover:bg-gray-100 transition-colors"
+                        aria-label="Diminuer la quantité"
                       >
-                        -
+                        <Minus size={16} />
                       </button>
-                      <span className="px-4 py-1 border-x">{item.quantity}</span>
+                      <span className="px-4 py-2 border-x font-semibold min-w-[3rem] text-center">{item.quantity}</span>
                       <button
                         onClick={() =>
                           handleQuantityChange(
@@ -147,9 +151,10 @@ export default function CartPage() {
                             item.quantity + 1
                           )
                         }
-                        className="px-3 py-1 hover:bg-gray-100"
+                        className="px-3 py-2 hover:bg-gray-100 transition-colors"
+                        aria-label="Augmenter la quantité"
                       >
-                        +
+                        <Plus size={16} />
                       </button>
                     </div>
                   </div>
@@ -166,30 +171,44 @@ export default function CartPage() {
         {/* Order Summary */}
         <div>
           <div className="bg-white rounded-lg p-6 shadow-sm border border-gray-200 sticky top-4">
-            <h2 className="text-xl font-bold mb-4">{t('cart.summary.title')}</h2>
+            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <Package size={24} />
+              {t('cart.summary.title')}
+            </h2>
 
             <div className="space-y-3 mb-4">
               <div className="flex justify-between text-gray-600">
-                <span>{t('cart.summary.subtotal')}</span>
+                <span className="flex items-center gap-2">
+                  <ShoppingBag size={16} />
+                  {t('cart.summary.subtotal')}
+                </span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
               <div className="flex justify-between text-gray-600">
-                <span>{t('cart.summary.shipping')}</span>
+                <span className="flex items-center gap-2">
+                  <Truck size={16} />
+                  {t('cart.summary.shipping')}
+                </span>
                 <span>{formatPrice(shipping)}</span>
               </div>
               <div className="border-t pt-3 flex justify-between font-bold text-lg">
-                <span>{t('cart.summary.total')}</span>
+                <span className="flex items-center gap-2">
+                  <CreditCard size={20} />
+                  {t('cart.summary.total')}
+                </span>
                 <span>{formatPrice(total)}</span>
               </div>
             </div>
 
             <Link href="/checkout">
-              <Button size="lg" className="w-full">
+              <Button size="lg" className="w-full flex items-center justify-center gap-2">
+                <CreditCard size={20} />
                 {t('cart.summary.checkout')}
               </Button>
             </Link>
 
-            <div className="mt-4 text-sm text-gray-600 text-center">
+            <div className="mt-4 text-sm text-gray-600 text-center flex items-center justify-center gap-2">
+              <ShieldCheck size={16} />
               {t('cart.summary.securePayment')}
             </div>
           </div>

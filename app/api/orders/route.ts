@@ -92,10 +92,16 @@ export async function POST(request: NextRequest) {
     // - etc.
 
     return NextResponse.json(order, { status: 201 });
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error creating order:', error);
+
+    // Donner plus de détails sur l'erreur
+    const errorMessage = error.message || 'Failed to create order';
     return NextResponse.json(
-      { error: 'Failed to create order' },
+      {
+        error: errorMessage,
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
       { status: 500 }
     );
   }
